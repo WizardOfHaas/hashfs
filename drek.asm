@@ -314,6 +314,7 @@ ret
 %INCLUDE "bFS.asm"
 %INCLUDE "int.asm"
 %INCLUDE "shell.asm"
+%INCLUDE "hash.asm"
 
 print:			;Print string
 	pusha
