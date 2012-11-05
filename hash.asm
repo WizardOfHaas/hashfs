@@ -2,7 +2,6 @@ gethash:
 	xor ax,ax
 	mov cx,2
 .loop
-	call getregs
 	cmp byte[si],0
 	je .done
 	movzx bx,byte[si]
@@ -14,7 +13,6 @@ gethash:
 .done
 	mov bx,2880
 	div bx
-	call getregs
 	mov ax,dx
 ret
 
@@ -25,5 +23,37 @@ userhash:
 	call input
 	mov si,buffer
 	call gethash
+
+	mov si,buffer
+	mov bx,void
+	call gethashfile
 ret
 	.prmpt db '>',0
+
+gethashfile:
+	push bx
+	call resetfloppy
+	call gethash
+	call l2hts
+
+	pop bx
+	mov ah,2
+	mov al,1
+	xor di,di
+	.retry
+	inc di
+	cmp di,3
+	jge .err
+	pusha
+	stc
+	int 13h
+	jc .fail
+	popa
+	jmp .done
+.fail
+	jmp .retry
+.err
+	call err
+	mov ax,'er'
+.done
+ret
