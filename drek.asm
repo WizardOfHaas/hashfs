@@ -180,6 +180,10 @@ getthread:		;Turns command into memory location
 	call compare
 	jc .termcmd
 
+	mov si,hash
+	call compare
+	jc .hashcmd
+
 	.err
         mov ax,'fl'
 	
@@ -242,6 +246,8 @@ getthread:		;Turns command into memory location
 .termcmd
 	mov ax,swapterm
 	jmp .done
+.hashcmd
+	mov ax,userhash
 .done
 ret
 
@@ -278,6 +284,7 @@ ret
 	lang db 'lang',0
 	langprmpt db 'LANG>',0
 	quit db 'quit',0
+	hash db 'hash',0
 	time db 'time',0
         info db 'info',0
         off db 'off',0
