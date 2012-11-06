@@ -13,7 +13,7 @@ mov bx,100h
 
 load:
 	mov ah,2
-	mov al,60
+	mov al,63
 	xor di,di
 	.retry
 	inc di
