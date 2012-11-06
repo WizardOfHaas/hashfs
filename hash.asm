@@ -26,17 +26,44 @@ userhash:
 	mov di,.put
 	call compare
 	jc .putcmd
+
+	mov di,.get
+	call compare
+	jc .getcmd
 	jmp .done
-.put
+.putcmd
+	mov si,.name
+	call print
+	mov di,buffer
+	call input
 	mov si,.outchar
 	call print
-	mov di,void
+	mov di,void + 100
+	call input
+
+	mov si,buffer
+	mov bx,void + 100
+	call puthashfile
+	jmp .done
+.getcmd
+	mov si,.name
+	call print
+	mov di,buffer
 	call input
 	
+	mov si,buffer
+	mov bx,void
+	call gethashfile
+	mov si,void
+	call print
+	call printret
+	jmp .done
 .done
 ret
 	.prmpt db 'hashfs>',0
+	.name db 'name>',0
 	.outchar db '>',0
+	.get db 'get',0
 	.put db 'put',0
 
 gethashfile:
@@ -69,7 +96,7 @@ ret
 
 puthashfile:
 	push bx
-	call resetfloppy
+	;call resetfloppy
 	call gethash
 	call l2hts
 
