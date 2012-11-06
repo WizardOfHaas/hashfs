@@ -21,14 +21,23 @@ userhash:
 	call print
 	mov di,buffer
 	call input
+	
 	mov si,buffer
-	call gethash
-
-	mov si,buffer
-	mov bx,void
-	call gethashfile
+	mov di,.put
+	call compare
+	jc .putcmd
+	jmp .done
+.put
+	mov si,.outchar
+	call print
+	mov di,void
+	call input
+	
+.done
 ret
-	.prmpt db '>',0
+	.prmpt db 'hashfs>',0
+	.outchar db '>',0
+	.put db 'put',0
 
 gethashfile:
 	push bx
@@ -38,6 +47,34 @@ gethashfile:
 
 	pop bx
 	mov ah,2
+	mov al,1
+	xor di,di
+	.retry
+	inc di
+	cmp di,3
+	jge .err
+	pusha
+	stc
+	int 13h
+	jc .fail
+	popa
+	jmp .done
+.fail
+	jmp .retry
+.err
+	call err
+	mov ax,'er'
+.done
+ret
+
+puthashfile:
+	push bx
+	call resetfloppy
+	call gethash
+	call l2hts
+
+	pop bx
+	mov ah,3
 	mov al,1
 	xor di,di
 	.retry

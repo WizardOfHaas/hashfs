@@ -51,10 +51,6 @@ Init:
 	call schedule
 	mov word[shellpid],ax
 
-	mov si,loaddir
-	call print
-	call loadrootdir
-
 	call getpit
 	mov [starttime],ax
 
@@ -180,6 +176,10 @@ getthread:		;Turns command into memory location
 	call compare
 	jc .termcmd
 
+	mov si,dte
+	call compare
+	jc .dtecmd
+
 	mov si,hash
 	call compare
 	jc .hashcmd
@@ -245,6 +245,9 @@ getthread:		;Turns command into memory location
 	jmp .done
 .termcmd
 	mov ax,swapterm
+	jmp .done
+.dtecmd
+	;mov ax,textedit
 	jmp .done
 .hashcmd
 	mov ax,userhash
