@@ -416,7 +416,7 @@ l2hts:
 	mov dx, 0			
 	div word [.SecsPerTrack]	
 	mov dx, 0
-	div word [.Sides]		
+	div word [.Sides]
 	mov dh, dl			
 	mov ch, al			
 	pop ax
