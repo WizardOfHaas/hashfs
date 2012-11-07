@@ -2,6 +2,9 @@ cli
 mov ax,0x7C0
 mov ds,ax
 mov es,ax
+mov ax,0
+mov ss,ax
+mov sp,0FFFFh
 sti
 
 mov si,loading
@@ -13,7 +16,7 @@ mov bx,100h
 
 load:
 	mov ah,2
-	mov al,63
+	mov al,64
 	xor di,di
 	.retry
 	inc di
@@ -70,6 +73,8 @@ print:			;Print string
 ret
 
 loading db 'Booting off HashFS...',0
+stods db 0,0,0,0
+stoes db 0,0,0,0
 
 times 510-($-$$) db 0
 dw 0AA55h
