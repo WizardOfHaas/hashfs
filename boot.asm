@@ -1,8 +1,9 @@
+
 cli
-mov ax,0x7C0
+mov ax,7C0h
 mov ds,ax
 mov es,ax
-mov ax,0
+mov ax,5
 mov ss,ax
 mov sp,0FFFFh
 sti
@@ -13,6 +14,8 @@ call print
 mov ax,1
 call l2hts
 mov bx,100h
+push word 0
+pop es
 
 load:
 	mov ah,2
@@ -34,7 +37,7 @@ load:
 	mov ax,'er'
 .done
 
-jmp 100h
+jmp 0:100h
 
 l2hts:
 	push bx

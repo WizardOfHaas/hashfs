@@ -18,7 +18,7 @@ JMP SHORT Init
 db 0
 Init:
 	cli
-	mov ax,0
+	mov ax,2
 	mov ss,ax
 	mov sp,0FFFFh
 	sti
