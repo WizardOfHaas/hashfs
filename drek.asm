@@ -14,13 +14,11 @@
 ;	copyright Sean Haas 2011-12
 ORG 100h
 
-JMP SHORT Init
-db 0
 Init:
 	cli
-	mov ax,2
+	mov ax,0
 	mov ss,ax
-	mov sp,0FFFFh
+	mov sp,0FFFFh	
 	sti
 
 	;mov byte[doterm],1	;uncomment to force boot into terminal output
