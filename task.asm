@@ -263,8 +263,7 @@ yield:
 	push bx
 	call pullregs
 	pop bx
-	call tasklist
-	call getregs
+	xchg bx,bx
 	call word[bx]
 .done
 	popa

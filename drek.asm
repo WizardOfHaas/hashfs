@@ -18,27 +18,15 @@ Init:
 	cli
 	mov ax,0
 	mov ss,ax
-	mov sp,0FFFFh	
+	mov sp,0FFFFh
 	sti
-
-	;mov byte[doterm],1	;uncomment to force boot into terminal output
 
 	cmp byte[iscrash],1
 	je bsod
 	mov byte[iscrash],1
 
-	mov ah,00h
-	mov al,03h
-	int 10h
-
 	mov si,splash
 	call print
-	
-	mov si,loadmem
-	call print
-	mov si,filesend + 1
-	mov dx,filesend + 1024
-	call memclear
 
 	mov si,loadmulti
 	call print
@@ -48,11 +36,6 @@ Init:
 	mov ax,shell
 	call schedule
 	mov word[shellpid],ax
-
-	call getpit
-	mov [starttime],ax
-
-	mov byte[colors + 2],2
 
 	mov ax,0
 	call porton
@@ -68,16 +51,6 @@ Init:
 
         mov si,header
         call print
-
-	mov si,ips
-	call print
-	call getips
-	mov ax,bx
-	call tostring
-	mov si,ax
-	call print
-	mov si,ipsticks
-	call print
 
 	mov si,voidat
 	call print
