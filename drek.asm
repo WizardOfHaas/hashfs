@@ -28,6 +28,12 @@ Init:
 	mov si,splash
 	call print
 
+	mov si,loadmem
+	call print
+	mov si,filesend + 1
+	mov dx,filesend + 1024
+	call memclear
+
 	mov si,loadmulti
 	call print
 	mov word[currpid],taskque
