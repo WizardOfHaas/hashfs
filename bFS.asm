@@ -106,33 +106,16 @@ ret
 findfile:
 	push si
 	push di					;Find file and give location
-	mov si,void + 20
-	mov bx,0
-.loop
-	cmp byte [si],'*'
-	je .file
-	cmp byte [si],'0'
-	je .err
-	add si,1
-	jmp .loop
-.file
-	mov dx,si
-	add si,2
-	call compare
-	jc .found
-	jmp .loop
-.found
-	sub si,2
-	mov si,dx
-	mov ax,si
-	add si,1
-	mov bx,0
-	mov bl,[si]
-	add bx,ax
-	jmp .done
+	mov si,di
+	mov bx,void
+	call gethashfile
+	cmp ax,'er'
+	jne .done
 .err
 	mov ax,0
 .done	
+	mov ax,void
+	mov bx,void + 512
 	pop di
 	pop si
 ret
@@ -145,45 +128,12 @@ copyfile:			;Copy file IN, di,name source, si,name destination
 	pop si
 	mov di,.sname
 	call copystring
-	
-	mov di,.sname
-	call findfile
-	sub bx,ax
-	xchg ax,bx
-	
-	pusha
-	mov ax,2
-	call maloc
-	popa
-	
-	mov si,.dname
-	call newfile
-	mov di,.dname
-	call findfile
-	push ax
-	push bx
 
 	mov di,.sname
 	call findfile
-	mov dx,bx
-	mov cx,ax
-	pop bx
-	pop ax
-	mov si,cx
-	mov di,ax
-	add si,10
-	add di,10
-	add dx,1
-.copyloop
-	mov ax,[si]
-	mov [di],ax
-	add si,1
-	add di,1
-	cmp si,void + 1024
-	jge .done
-	cmp si,dx
-	jge .done
-	jmp .copyloop
+	mov si,.dname
+	mov bx,void
+	call puthashfile
 .done
 	popa
 ret

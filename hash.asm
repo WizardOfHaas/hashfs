@@ -96,7 +96,6 @@ ret
 
 puthashfile:
 	push bx
-	;call resetfloppy
 	call gethash
 	call l2hts
 
