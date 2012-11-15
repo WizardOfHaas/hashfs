@@ -9,19 +9,10 @@ textedit:
 	mov di,.filename
 	call copystring
 
-	mov di,.filename
-	call findfile
-	cmp ax,0
-	jne .type
-
-	mov si,.filename
-	mov ax,11
-	call newfile
-	mov di,.filename
-	call findfile
-	mov [.filestart],ax
+	mov dx,void + 20
+	mov si,void + 1024
+	call memclear
 .loop
-	add byte [.lines],1
 	mov di,buffer
 	call input
 	
@@ -39,78 +30,10 @@ textedit:
 	pop bx
 	add byte [.lines],1
 	jmp .loop
-.type
-	mov di,.filename
-	call tagprintfile
-.edit
-	mov si,.line
-	call print
-	mov di,buffer
-	call input
-
-	mov si,buffer
-	call toint
-	mov di,.filename
-	call getindex
-	push di
-	mov si,di
-	call print
-
-	mov si,.outchar
-	call print
-	mov di,buffer
-	call input
-	pop di
-	push di
-
-	mov ax,di
-	call length
-	push ax
-	mov ax,buffer
-	call length
-	pop bx
-	cmp ax,bx
-	jg .editgrow
-	jl .editshrink
-	.editok
-	pop di
-	mov si,buffer
-	call copystring
-	jmp .done
-.editshrink
-	pop di
-	push di
-	mov si,di
-	add si,bx
-	add di,ax
-	mov ax,si
-	add ax,1024
-	call movemem
-	jmp .editok
-.editgrow
-	pop di
-	push di
-	mov si,di
-	add si,bx
-	add di,ax
-	mov ax,1024
-	call memcpy
-	jmp .editok
-.listfiles
-	call filelist
-	jmp .start
 .done
-	mov ax,1
-	call maloc
-
-	mov si,[.filestart]
-	sub bl,[.filestart]
-	add si,1
-	mov [si],bl
-	mov si,[.filestart]
-	add si,10
-	mov al,'d'
-	mov [si],al
+	mov si,.filename
+	mov bx,void + 20
+	call puthashfile
 .end
 	call printret
 ret

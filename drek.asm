@@ -224,7 +224,7 @@ getthread:		;Turns command into memory location
 	mov ax,swapterm
 	jmp .done
 .dtecmd
-	;mov ax,textedit
+	mov ax,textedit
 	jmp .done
 .hashcmd
 	mov ax,userhash
@@ -302,6 +302,7 @@ ret
 %INCLUDE "int.asm"
 %INCLUDE "shell.asm"
 %INCLUDE "hash.asm"
+%INCLUDE "dte.asm"
 
 print:			;Print string
 	pusha

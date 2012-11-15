@@ -210,7 +210,6 @@ ret
 getindex:
 	push ax
 	call findfile
-	add ax,12
 	mov di,ax
 	pop ax
 	mov cx,0
