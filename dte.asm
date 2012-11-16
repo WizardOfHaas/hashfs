@@ -2,16 +2,14 @@ textedit:
 	.start
 	mov si,.name
 	call print
-	mov di,buffer
-	call input
-
-	mov si,buffer
 	mov di,.filename
-	call copystring
+	call input
+	
+	mov ax,1
+	call maloc
+	add ax,1
+	mov [.filestart],ax
 
-	mov dx,void + 20
-	mov si,void + 1024
-	call memclear
 .loop
 	mov di,buffer
 	call input
@@ -24,21 +22,26 @@ textedit:
 	mov ax,buffer
 	call length
 	call maloc
+	mov [.filend],ax
 	push ax
 	mov si,buffer
 	call load2mem
 	pop bx
-	add byte [.lines],1
+	mov byte[bx],13
+	mov byte[bx + 1],10
 	jmp .loop
 .done
+	mov ax,1
+	call maloc
+	mov byte[bx],0
 	mov si,.filename
-	mov bx,void + 20
+	mov bx,[.filestart]
 	call puthashfile
 .end
 	call printret
 ret
-	.filestart db 0
-	.filend db 0
+	.filestart db 0,0
+	.filend db 0,0
 	.lines db 0
 	.filename times 16 db 0
 	.name db 'NAME>',0
