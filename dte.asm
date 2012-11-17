@@ -4,6 +4,10 @@ textedit:
 	call print
 	mov di,.filename
 	call input
+
+	mov si,buffer
+	call isfileempty
+	jc .type
 	
 	mov ax,1
 	call maloc
@@ -30,6 +34,15 @@ textedit:
 	mov byte[bx],13
 	mov byte[bx + 1],10
 	jmp .loop
+.type
+	mov ax,1
+	call maloc
+	push bx
+	mov si,buffer
+	call gethashfile
+	pop si
+	call print
+	jmp .end
 .done
 	mov ax,1
 	call maloc

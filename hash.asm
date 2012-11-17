@@ -120,3 +120,24 @@ puthashfile:
 	mov ax,'er'
 .done
 ret
+
+isfileempty:
+	pusha
+	mov bx,void + 4096
+	call gethashfile
+	mov si,void + 4096
+.loop
+	cmp byte[si],0
+	jne .stuff
+	cmp si,void + 4096 + 512
+	jge .empty
+	add si,1
+	jmp .loop
+.empty
+	clc
+	jmp .done
+.stuff
+	stc
+.done
+	popa
+ret
