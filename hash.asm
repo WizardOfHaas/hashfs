@@ -30,6 +30,10 @@ userhash:
 	mov di,.get
 	call compare
 	jc .getcmd
+
+	mov di,.kill
+	call compare
+	jc .killcmd
 	jmp .done
 .putcmd
 	mov si,.name
@@ -58,6 +62,13 @@ userhash:
 	call print
 	call printret
 	jmp .done
+.killcmd
+	mov si,.name
+	call print
+	mov di,buffer
+	call input
+	mov si,buffer
+	call killhashfile	
 .done
 ret
 	.prmpt db 'hashfs>',0
@@ -65,6 +76,7 @@ ret
 	.outchar db '>',0
 	.get db 'get',0
 	.put db 'put',0
+	.kill db 'kill',0
 
 gethashfile:
 	push bx
@@ -140,4 +152,23 @@ isfileempty:
 	stc
 .done
 	popa
+ret
+
+makefileempty:
+	pusha
+	mov si,void + 4096
+.loop
+	mov byte[si],0
+	cmp si,void + 4096 + 512
+	jg .done
+	add si,1
+	jmp .loop
+.done
+	popa	
+ret
+
+killhashfile:
+	call makefileempty
+	mov bx,void + 4096
+	call puthashfile
 ret

@@ -5,7 +5,7 @@ textedit:
 	mov di,.filename
 	call input
 
-	mov si,buffer
+	mov si,.filename
 	call isfileempty
 	jc .type
 	
@@ -35,12 +35,7 @@ textedit:
 	mov byte[bx + 1],10
 	jmp .loop
 .type
-	mov ax,1
-	call maloc
-	push bx
-	mov si,buffer
-	call gethashfile
-	pop si
+	mov si,void + 4096
 	call print
 	jmp .end
 .done
