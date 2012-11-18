@@ -50,18 +50,27 @@ textedit:
 	call print
 	mov di,buffer
 	call input
+	cmp byte[buffer],'q'
+	je .end
 	mov si,buffer
 	call toint
 	mov si,void + 4096
 	call getindex
+	push si
 	call print
-	jmp .end
+	mov si,.outchar
+	call print
+	pop di
+	call input
+	mov bx,void + 4096
+	jmp .write
 .done
 	mov ax,1
 	call maloc
 	mov byte[bx],0
-	mov si,.filename
 	mov bx,[.filestart]
+	.write
+	mov si,.filename
 	call puthashfile
 .end
 	call printret
@@ -73,7 +82,7 @@ ret
 	.name db 'NAME>',0
 	.line db 'LINE>',0
 	.list db 'list',0
-	.outchar db '>'
+	.outchar db '>',0
 
 printfile:
 	add ax,12
