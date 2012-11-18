@@ -172,3 +172,18 @@ killhashfile:
 	mov bx,void + 4096
 	call puthashfile
 ret
+
+getindex:
+.loop
+	cmp ax,0
+	je .done
+	cmp byte[si],0
+	je .test
+	add si,1
+	jmp .loop
+.test
+	add si,1
+	sub ax,1
+	jmp .loop
+.done
+ret

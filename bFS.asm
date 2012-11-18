@@ -207,32 +207,6 @@ pullfile:
 ret
 	.tmp db 'mtmp',0
 
-getindex:
-	push ax
-	call findfile
-	mov di,ax
-	pop ax
-	mov cx,0
-.loop
-	cmp byte[di],0
-	je .index
-	add di,1
-	cmp di,bx
-	jge .err	
-	jmp .loop
-.index
-	cmp cx,ax
-	je .done
-	add cx,1
-	add di,1
-	jmp .loop
-.err
-	sub di,1
-	mov ax,'ne'
-.done
-	add di,1
-ret
-
 newtag:				;Make a tag, SI, name, DI, value
 	push di
 	push si

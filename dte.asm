@@ -31,11 +31,29 @@ textedit:
 	mov si,buffer
 	call load2mem
 	pop bx
-	mov byte[bx],13
-	mov byte[bx + 1],10
+	mov byte[bx],0
 	jmp .loop
 .type
 	mov si,void + 4096
+.typeloop
+	call print
+	call printret
+	mov ax,si
+	call length
+	add si,ax	
+	add si,1
+	cmp byte[si],0
+	jne .typeloop
+.edit
+	call printret
+	mov si,.line
+	call print
+	mov di,buffer
+	call input
+	mov si,buffer
+	call toint
+	mov si,void + 4096
+	call getindex
 	call print
 	jmp .end
 .done
