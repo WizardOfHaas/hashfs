@@ -52,6 +52,10 @@ textedit:
 	call input
 	cmp byte[buffer],'q'
 	je .end
+	cmp byte[buffer],'t'
+	je .type
+	cmp byte[buffer],'w'
+	je .editdone
 	mov si,buffer
 	call toint
 	mov si,void + 4096
@@ -66,8 +70,12 @@ textedit:
 	mov si,buffer
 	call fixsize
 	call copystring
+	jmp .edit
+.editdone
 	mov bx,void + 4096
-	jmp .write
+	mov si,.filename
+	call puthashfile
+	jmp .end
 .done
 	mov ax,1
 	call maloc
