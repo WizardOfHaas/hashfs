@@ -60,8 +60,12 @@ textedit:
 	call print
 	mov si,.outchar
 	call print
-	pop di
+	mov di,buffer
 	call input
+	pop di
+	mov si,buffer
+	call fixsize
+	call copystring
 	mov bx,void + 4096
 	jmp .write
 .done
@@ -131,3 +135,40 @@ tagprintfile:
 	call printret
 ret
 	.nextfile db 0,0
+
+fixsize:
+	pusha
+	mov [.src],si
+	mov [.dest],di
+	push di
+	mov ax,si
+	call length
+	pop di
+	push ax
+	mov ax,di
+	call length
+	pop bx
+	cmp ax,bx
+	jl .grow
+	jg .shrink
+	jmp .done
+.shrink
+	mov di,[.dest]
+	add di,bx
+	mov si,[.dest]
+	add si,ax
+	mov ax,512
+	call memcpy
+	jmp .done
+.grow
+	mov si,[.dest]
+	add si,ax
+	mov di,[.dest]
+	add di,bx
+	mov ax,512
+	call memcpy
+.done
+	popa
+ret
+	.src dw 0
+	.dest dw 0
