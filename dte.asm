@@ -9,6 +9,10 @@ textedit:
 	call isfileempty
 	jc .type
 	
+	mov si,filesend
+	mov dx,filesend + 1024
+	call memclear
+
 	mov ax,1
 	call maloc
 	add ax,1
@@ -80,8 +84,10 @@ textedit:
 	mov ax,1
 	call maloc
 	mov byte[bx],0
+	mov ax,bx
+	add ax,512
+	call zeroram
 	mov bx,[.filestart]
-	.write
 	mov si,.filename
 	call puthashfile
 .end
