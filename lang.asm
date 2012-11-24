@@ -738,13 +738,6 @@ langcommand:
 	mov byte [void], 0
 	jmp .done
 .done
-	mov ax,.ok
-	call schedule
-	mov word[pidbuff],ax
-	call yield
-	.ok
-	mov ax,word[pidbuff]
-	call kill
 ret
 	.outchar db '>',0
 	.inchar db '<',0
@@ -840,26 +833,25 @@ runlangfile:
 	mov bx,void
 	mov si,di
 	call gethashfile
-
-	mov bx,void
-	call getfilesize
-	mov [.filend],ax
 	mov si,void
 .loop	
-	cmp si,[.filend]
-	jge .done
 	push si
+	call print
 	mov ax,si
 	call length
+	add ax,1
 	mov [.tmp],ax
 	pop si
+	push si
 	call parse
 	call langcommand
+	pop si
 	add si,[.tmp]
+	cmp byte[si],0
+	je .done
 	jmp .loop
 .done
 ret
-	.filend db 0,0
 	.tmp dw 0
 
 incandpad:
