@@ -279,6 +279,20 @@ coopcall:
 ret
 	.pid db 0,0,0
 
+cleartime:
+	pusha
+	mov ah,01h
+	xor cx,cx
+	xor dx,dx
+	int 1Ah
+	popa
+ret
+
+getsystime:
+	xor ax,ax
+	int 1Ah
+ret
+
 currpid db 0,0
 taskque times 32 db 0
 times 2 db 0

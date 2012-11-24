@@ -303,6 +303,7 @@ ret
 %INCLUDE "shell.asm"
 %INCLUDE "hash.asm"
 %INCLUDE "dte.asm"
+%INCLUDE "lang.asm"
 
 print:			;Print string
 	pusha
@@ -1024,6 +1025,10 @@ bsod:
 	mov si,bsodmsg
 	call print
 	call printret
+	mov si,.wl
+	call print
+	call printret
+	call crashlog
 	popa
 	call getregs
 	call printret
@@ -1053,6 +1058,7 @@ bsod:
 	call schedule
 	call main
 ret
+	.wl db '          Writting crash log...',0
 
 reboot1:
 	mov si,rebootmsg

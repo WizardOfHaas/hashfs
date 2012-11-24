@@ -34,6 +34,10 @@ userhash:
 	mov di,.kill
 	call compare
 	jc .killcmd
+
+	mov di,.test
+	call compare
+	jc .testcmd
 	jmp .done
 .putcmd
 	mov si,.name
@@ -47,7 +51,7 @@ userhash:
 
 	mov si,buffer
 	mov bx,void + 100
-	call puthashfile
+	call putfiletimed
 	jmp .done
 .getcmd
 	mov si,.name
@@ -57,7 +61,7 @@ userhash:
 	
 	mov si,buffer
 	mov bx,void
-	call gethashfile
+	call getfiletimed
 	mov si,void
 	call print
 	call printret
@@ -69,6 +73,9 @@ userhash:
 	call input
 	mov si,buffer
 	call killhashfile	
+	jmp .done
+.testcmd
+	call testdrive
 .done
 ret
 	.prmpt db 'hashfs>',0
@@ -77,6 +84,39 @@ ret
 	.get db 'get',0
 	.put db 'put',0
 	.kill db 'kill',0
+	.test db 'test',0
+
+testdrive:
+	mov si,.test
+	mov bx,void
+	call getfiletimed
+	mov si,.test
+	mov bx,void
+	call putfiletimed
+ret
+	.test db 'test',0
+
+getfiletimed:
+	call cleartime
+	call gethashfile
+	call getsystime
+	mov ax,dx
+	call tostring
+	mov si,ax
+	call print
+	call printret
+ret
+
+putfiletimed:
+	call cleartime
+	call puthashfile
+	call getsystime
+	mov ax,dx
+	call tostring
+	mov si,ax
+	call print
+	call printret
+ret
 
 gethashfile:
 	push bx
@@ -154,6 +194,17 @@ isfileempty:
 	popa
 ret
 
+getfilesize:
+	xor ax,ax
+.loop
+	cmp byte[bx],0
+	je .done
+	add ax,1
+	add bx,1
+	jmp .loop
+.done
+ret
+
 makefileempty:
 	pusha
 	mov si,void + 4096
@@ -187,3 +238,30 @@ getindex:
 	jmp .loop
 .done
 ret
+
+crashlog:
+	mov [void + 4096 + 10],di
+	mov di,void + 4096
+	mov [di],ax
+	mov [di + 2],bx
+	mov [di + 4],cx
+	mov [di + 6],dx
+	mov [di + 8],si
+	mov [di + 12],ss
+	mov [di + 14],cs
+	mov [di + 16],ds
+	mov [di + 18],es
+	mov [di + 20],fs
+	mov [di + 22],gs
+	mov [di + 24],sp
+	mov [di + 26],bp
+
+	mov bx,void + 4096
+	mov si,crash
+	call puthashfile
+
+	mov bx,void
+	mov si,.void
+	call puthashfile
+ret
+	.void db 'void',0

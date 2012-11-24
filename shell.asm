@@ -9,8 +9,13 @@ shell:
 	call commands
 	cmp ax,'fl'
 	jne .done
+
+	mov di,buffer
+	call runlangfile
+	jmp .done
 .err
 	call err
+	jmp .done
 .done
 ret
 
