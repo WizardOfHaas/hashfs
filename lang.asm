@@ -836,7 +836,6 @@ runlangfile:
 	mov si,void
 .loop	
 	push si
-	call print
 	mov ax,si
 	call length
 	add ax,1
