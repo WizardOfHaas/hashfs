@@ -10,8 +10,9 @@ shell:
 	cmp ax,'fl'
 	jne .done
 
-	mov di,buffer
-	call runlangfile
+	mov si,buffer
+	call parse
+	call langcommand
 	jmp .done
 .err
 	call err

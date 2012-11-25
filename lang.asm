@@ -149,25 +149,16 @@ langcommand:
 	call compare
 	jc .filepvar
 	popa
-	pusha
-	mov di,bx
-	call findfile
-	cmp ax,0
-	jne .filept
-	popa
+	mov si,bx
+	call isfileempty
+	jc .ift
 	jmp .done
 .filepvar
 	popa
-	pusha
-	mov di,.var
-	call findfile
-	cmp ax,0
-	jne .filept
-	popa
+	mov si,.var
+	call isfileempty
+	jc .ift
 	jmp .done
-.filept
-	popa
-	jmp .ift
 .if
 	mov si,bx
 	mov di,.bakchar
@@ -322,15 +313,6 @@ langcommand:
 	jmp .done
 .go
 	pusha
-	mov di,bx
-	call isvfs
-	cmp ax,'VF'
-	je .govf
-	cmp ax,'LV'
-	je .govf
-	popa
-
-	pusha
 	mov di,.varchar
 	mov si,bx
 	call compare
@@ -338,12 +320,7 @@ langcommand:
 	popa
 
 	mov di,bx
-	call runlangvfile
-	jmp .done
-.govf
-	popa
-	mov di,bx
-	call runlangvfile
+	call runlangfile
 	jmp .done
 .govar
 	popa
@@ -468,114 +445,48 @@ langcommand:
 	
 	mov di,.newchar
 	call compare
-	je .filenew
-
-	mov di,.loadchar
-	call compare
-	jc .fileload
+	jc .filenew
 
 	mov di,.eqlchar
 	call compare
-	jmp .fileset
+	jc .fileset
 	jmp .done
 .filereset
-	mov di,bx
-	push di
-	call pullfile
-	pop di
-	call findfile
-	add ax,12
-	push ax
-	mov di,ax
+	push bx
+	mov bx,void + 4096
+	mov ax,void + 4096 + 512
+	call zeroram
 	mov si,.var
+	mov di,void + 4096
 	call copystring
-	mov ax,.var
-	call length
-	mov bx,ax
-	pop ax
-	push ax
-	add ax,bx
-	mov si,ax
-	add si,1
-	mov dx,ax
-	add dx,256
-	call memclear
-	mov ax,1
-	call maloc
-	mov bx,ax
-	pop ax
-	sub ax,11
-	mov si,ax
-	sub bl,al
-	mov byte[si],bl
+	pop si
+	mov bx,void + 4096
+	call puthashfile
 	jmp .done
 .fileset
-	mov di,bx
-	push di
-	push dx
-	call findfile
-	cmp ax,0
-	je .fileseterr
-	pop dx
-	pop di
-	
+	pusha
+	mov si,bx
+	mov bx,void + 4096
+	call gethashfile
+	popa
 	cmp dx,0
-	jg .filesetarray
+	jne .filesetarray
 
-	add ax,12
-	mov si,ax
+	mov si,void + 4096
 	mov di,.var
 	call copystring
 	jmp .done
 .filesetarray
-	push di
 	mov si,dx
 	call toint
-	pop di
-
-	call getindex	
-	mov si,di
+	mov si,void + 4096
+	call getindex
 	mov di,.var
 	call copystring
 	jmp .done
-.fileseterr
-	pop dx
-	pop di
-	jmp .err
 .fileout
-	pusha
-	mov di,bx
-	call isvfs
-	cmp ax,'VF'
-	je .vfout
-	popa
-
-	pusha
-	mov di,.varchar
 	mov si,bx
-	call compare
-	jc .filevarout
-	popa
-	
-	mov di,bx
-	.fileoutdo
-	call findfile
-	cmp ax,0
-	je .err
-	call tagprintfile
-	jmp .done
-.vfout
-	popa
-	mov di,bx
-	call printvf
-	jmp .done
-.filevarout
-	popa
-	mov di,.var
-	jmp .fileoutdo
-.fileload
-	mov di,bx
-	call disk2bfs
+	call printhashfile
 	jmp .done
 .filein
 	cmp dx,0
@@ -907,55 +818,5 @@ cutend:
 	pusha
 	call getlastchar
 	mov byte[di],0
-	popa
-ret
-
-runlangvfile:				;IN - di, file to run
-	pusha
-	mov ax,1
-	call maloc
-	mov ax,word[shellpid]
-	call kill
-	popa
-	pusha
-	call isvfs
-	cmp ax,'VF'
-	jne .norm	
-	popa
-	pusha
-	call disk2bfs
-	call fixfile
-	.normok
-	mov si,tmp
-	call copyfile
-	mov di,tmp
-	call findfile
-	mov si,ax
-	add si,12
-.loop
-	cmp byte[si],'0'
-	je .done
-	cmp byte[si],0
-	je .done
-	mov ax,si
-	call length
-	pusha
-	call parse
-	call langcommand
-	popa
-	add si,ax
-	inc si
-	jmp .loop
-.norm 
-	popa
-	pusha
-	jmp .normok
-.done
-	call cleartmp
-	popa
-	pusha
-	mov ax,shell
-	call schedule
-	mov word[shellpid],ax
 	popa
 ret

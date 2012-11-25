@@ -265,3 +265,18 @@ crashlog:
 	call puthashfile
 ret
 	.void db 'void',0
+
+printhashfile:
+	mov bx,void + 4096
+	call gethashfile
+	mov si,void + 4096
+.typeloop
+	call print
+	call printret
+	mov ax,si
+	call length
+	add si,ax	
+	add si,1
+	cmp byte[si],0
+	jne .typeloop
+ret
