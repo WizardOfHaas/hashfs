@@ -161,6 +161,10 @@ getthread:		;Turns command into memory location
 	call compare
 	jc .hashcmd
 
+	mov si,userchar
+	call compare
+	jc .usercmd
+
 	.err
         mov ax,'fl'
 	
@@ -228,6 +232,9 @@ getthread:		;Turns command into memory location
 	jmp .done
 .hashcmd
 	mov ax,userhash
+	jmp .done
+.usercmd
+	mov ax,usercmd
 .done
 ret
 
@@ -235,7 +242,15 @@ commands:
 	call getthread
 	cmp ax,'fl'
 	je .err
+	mov bx,[user]
+	cmp bx,'0'
+	jne .exclude
+	.ok
 	call coopcall
+	jmp .err
+.exclude
+	cmp ax,unsecure
+	jge .ok
 .err
 ret
 
@@ -265,6 +280,7 @@ ret
 	langprmpt db 'LANG>',0
 	quit db 'quit',0
 	hash db 'hash',0
+	userchar db 'user',0
 	time db 'time',0
         info db 'info',0
         off db 'off',0
@@ -293,18 +309,20 @@ ret
 	doterm db 0,0
 	locked db 0,0
 	colors db 02,0,0,0
-        buffer times 128 db 0
+        user db 0,0
+	buffer times 128 db 0
 
+%INCLUDE "usr.asm"
 %INCLUDE "task.asm"
 %INCLUDE "memc.asm"	
 %INCLUDE "term.asm"
+%INCLUDE "hash.asm"
 %INCLUDE "bFS.asm"
 %INCLUDE "int.asm"
+unsecure:
 %INCLUDE "shell.asm"
-%INCLUDE "hash.asm"
 %INCLUDE "dte.asm"
 %INCLUDE "lang.asm"
-%INCLUDE "usr.asm"
 
 print:			;Print string
 	pusha

@@ -77,17 +77,20 @@ getuserdata:		;DI - User Name out SI - hash AX - #
 	pop di
 	pop si
 	mov si,bx
-	mov ax,cx
+	mov bx,cx
+	mov ax,[bx]
 ret
 	.tmp db 0,0
 
 login:
+	mov byte[locked],1
 	mov si,.usr
 	call print
 	mov di,buffer
 	call input
 	mov di,buffer
 	call getuserdata
+	push ax
 	push si
 
 	mov si,.pass
@@ -100,18 +103,59 @@ login:
 	mov di,ax
 	pop si
 	call compare
+	pop ax
 	jc .done
 	call err
 	jmp login
 .done
+	mov [user],ax
+	mov byte[locked],0
+	mov si,void
+	mov dx,void + 512
+	call memclear
 ret
 	.usr db 'UserName>',0
 	.pass db 'Password>',0
 
-usertest:
-	mov ax,'0'
-	mov di,.root
-	mov si,.root
+usercmd:
+	mov si,.prmpt
+	call print
+	mov di,buffer
+	call input
+	
+	mov di,buffer
+	mov si,.add
+	call compare
+	jc .addcmd
+
+	mov si,.init
+	call compare
+	jc .initcmd
+	jmp .done
+.addcmd
+	mov si,login.usr
+	call print
+	mov di,buffer
+	call input
+	
+	mov si,login.pass
+	call print
+	mov di,void + 4096
+	call input
+
+	mov ax,'1'
+	mov si,buffer
+	mov di,void + 4096
 	call newuser
+	jmp .done
+.initcmd
+	mov ax,'0'
+	mov si,.root
+	mov di,.root
+	call newuser
+.done
 ret
+	.prmpt db 'USER>',0
+	.add db 'add',0
+	.init db 'init',0
 	.root db 'root',0
