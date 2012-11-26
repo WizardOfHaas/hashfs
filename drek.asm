@@ -165,6 +165,14 @@ getthread:		;Turns command into memory location
 	call compare
 	jc .usercmd
 
+	mov si,quit
+	call compare
+	jc .locmd
+
+	mov si,lo
+	call compare
+	jc .locmd
+
 	.err
         mov ax,'fl'
 	
@@ -235,6 +243,9 @@ getthread:		;Turns command into memory location
 	jmp .done
 .usercmd
 	mov ax,usercmd
+	jmp .done
+.locmd
+	mov ax,locmd
 .done
 ret
 
@@ -274,6 +285,7 @@ ret
 	list db 'list',0
 	catch db 'catch',0
 	regs db 'regs',0
+	lo db 'lo',0
 	file db 'file',0
 	log db 'log',0
 	lang db 'lang',0
@@ -986,6 +998,14 @@ ret
 taskman:
 	call gotask
 ret	
+
+locmd:
+	call killque
+	call login
+	mov ax,shell
+	call schedule
+	jmp main
+ret
 
 logit:
 	mov byte[locked],1
