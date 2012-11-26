@@ -198,10 +198,19 @@ getfilesize:
 	xor ax,ax
 .loop
 	cmp byte[bx],0
-	je .done
+	je .test
+	cmp ax,512
+	jge .done		
 	add ax,1
 	add bx,1
 	jmp .loop
+.test
+	add bx,1
+	cmp byte[bx],0
+	jne .loop
+	add bx,1
+	cmp byte[bx],0
+	jne .loop
 .done
 ret
 

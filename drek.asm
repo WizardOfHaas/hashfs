@@ -67,7 +67,8 @@ Init:
 	call printret
 
 	call loadints
-
+	call usertest
+	call login
 main:			;Main command loop
 	call yield
 jmp main
@@ -304,6 +305,7 @@ ret
 %INCLUDE "hash.asm"
 %INCLUDE "dte.asm"
 %INCLUDE "lang.asm"
+%INCLUDE "usr.asm"
 
 print:			;Print string
 	pusha
@@ -1025,10 +1027,6 @@ bsod:
 	mov si,bsodmsg
 	call print
 	call printret
-	mov si,.wl
-	call print
-	call printret
-	call crashlog
 	popa
 	call getregs
 	call printret

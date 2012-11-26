@@ -742,19 +742,33 @@ resetvfs:
 ret
 
 saveramdisk:
-	mov di,.disk
-	call getvfsdata
-	mov ah,3
-	mov al,1
+	mov si,.disk
 	mov bx,void
-	int 13h
+	call puthashfile
 ret
-	.disk db 'DISK',0
+	.disk db 'disk',0
 
 loadramdisk:
-	mov di,.disk
+	mov si,.disk
 	mov bx,void
-	call vfs2disk
-	call resetvfs
+	call gethashfile
 ret
-	.disk db 'DISK',0
+	.disk db 'disk',0
+
+backupramdisk:
+	pusha
+	mov di,void + 5120
+	mov si,void
+	mov ax,512
+	call memcpy
+	popa
+ret
+
+restoreramdisk:
+	pusha
+	mov si,void + 5120
+	mov di,void
+	mov ax,512
+	call memcpy
+	popa
+ret
