@@ -67,7 +67,6 @@ Init:
 	call printret
 
 	call loadints
-	call usertest
 	call login
 main:			;Main command loop
 	call yield

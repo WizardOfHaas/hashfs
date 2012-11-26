@@ -16,10 +16,10 @@ newuser:	;Makes new user SI - name DI - passwd AX - priv level (0-root)
 
 	call useraddstub
 	push ax
-	;mov si,di
-	;call gethash
-	;call tostring
-	;mov si,ax
+	mov si,di
+	call gethash
+	call tostring
+	mov si,ax
 	call useraddstub
 	pop ax
 	mov si,[.end]
@@ -94,13 +94,10 @@ login:
 	call print
 	mov di,buffer
 	call input
-	;mov si,buffer
-	;call gethash
-	;call tostring
-	;mov si,ax
-	;call print
-	;mov di,ax
-	mov di,buffer
+	mov si,buffer
+	call gethash
+	call tostring
+	mov di,ax
 	pop si
 	call compare
 	jc .done
