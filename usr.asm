@@ -7,10 +7,12 @@ newuser:	;Makes new user SI - name DI - passwd AX - priv level (0-root)
 	call getfilesize
 	add ax,void + 2
 	mov [.end],ax
+	.test
 	mov si,[.end]
 	cmp byte[si -1],0
 	je .ok
 	add byte[.end],1
+	jmp .test
 	.ok
 	popa
 
@@ -131,6 +133,10 @@ usercmd:
 	mov si,.init
 	call compare
 	jc .initcmd
+
+	mov si,list
+	call compare
+	jc .listcmd
 	jmp .done
 .addcmd
 	mov si,login.usr
@@ -153,6 +159,12 @@ usercmd:
 	mov si,.root
 	mov di,.root
 	call newuser
+	jmp .done
+.listcmd
+	mov si,userchar
+	mov bx,void
+	mov di,void + 2
+	call printfilell
 .done
 ret
 	.prmpt db 'USER>',0

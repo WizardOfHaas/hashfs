@@ -442,10 +442,6 @@ langcommand:
 	mov di,.inchar
 	call compare
 	jc .filereset
-	
-	mov di,.newchar
-	call compare
-	jc .filenew
 
 	mov di,.eqlchar
 	call compare
@@ -579,45 +575,6 @@ langcommand:
 	call memcpy
 	pop di
 	jmp .fileinok
-.filenew
-	pusha
-	mov di,.varchar
-	mov si,bx
-	call compare
-	jc .filevarnew
-	popa
-
-	push bx
-	mov di,bx
-	call findfile
-	cmp ax,0
-	jne .filenewerr
-	pop bx
-
-	.filenewdo
-
-	push bx
-	mov si,bx
-	mov ax,11
-	call newfile
-	pop bx
-
-	mov di,bx
-	call findfile
-	add ax,10
-	mov si,ax
-	mov byte[si],'l'
-	add si,2
-	mov byte[si],'*'
-	add si,1
-	mov byte[si],0
-	jmp .done
-.filevarnew
-	mov bx,.var
-	jmp .filenewdo
-.filenewerr
-	popa
-	jmp .err
 .free
 	call cleartmp
 	jmp .done

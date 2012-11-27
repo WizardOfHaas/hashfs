@@ -103,24 +103,26 @@ ret
 	.outchar db '>',0
 
 printfile:
-	add ax,12
-	mov [.filend],bx
-	mov si,ax
+	mov bx,void + 4096
+	mov di,void + 4096
+	call printfilell
+ret
+
+printfilell:
+	push di
+	call gethashfile	
+	pop si
 .typeloop
 	call print
+	call printret
 	mov ax,si
 	call length
 	add si,ax
-	cmp si,[.filend]
-	jge .done
 	add si,1
-	call printret
-	cmp byte[si],'*'
-	je .done
-	jmp .typeloop
+	cmp byte[si],0
+	jne .typeloop
 .done
 ret
-	.filend db 0,0
 
 tagprintfile:
 	mov [.nextfile],di

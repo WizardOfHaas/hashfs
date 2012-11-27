@@ -171,3 +171,28 @@ zeroram:
 .done	
 	popa
 ret
+
+memdump:
+	mov si,.bott
+	call print
+	mov di,buffer
+	call input
+	
+	mov si,buffer
+	mov di,.void
+	call compare
+	jc .dumpvoid
+
+	mov si,buffer
+	call toint
+	mov si,ax
+	call getdump
+	jmp .done
+.dumpvoid
+	mov si,void
+	call getdump
+.done
+	call printret
+ret
+	.bott db 'Bottom>',0
+	.void db 'void',0
