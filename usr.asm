@@ -1,7 +1,7 @@
 newuser:	;Makes new user SI - name DI - passwd AX - priv level (0-root)
 	pusha
 	mov bx,void
-	mov si,.user
+	mov si,userchar
 	call gethashfile
 	mov si,void
 	call getfilesize
@@ -29,10 +29,9 @@ newuser:	;Makes new user SI - name DI - passwd AX - priv level (0-root)
 	mov byte[si + 1],0
 
 	mov bx,void
-	mov si,.user
+	mov si,userchar
 	call puthashfile
 ret
-	.user db 'user',0
 	.end db 0,0
 
 useraddstub:
@@ -48,9 +47,22 @@ useraddstub:
 	popa
 ret
 
+killuser:		;DI - user to kill
+	call getuserdata
+	mov ax,si
+	call length
+	add si,ax
+	add si,3
+	mov ax,512
+	call memcpy
+
+	mov si,userchar
+	call puthashfile
+ret
+
 getuserdata:		;DI - User Name out SI - hash AX - #
 	pusha
-	mov si,newuser.user
+	mov si,userchar
 	mov bx,void
 	call gethashfile
 	popa
@@ -78,6 +90,7 @@ getuserdata:		;DI - User Name out SI - hash AX - #
 .done
 	pop di
 	pop si
+	mov di,ax
 	mov si,bx
 	mov bx,cx
 	mov ax,[bx]
@@ -137,6 +150,10 @@ usercmd:
 	mov si,list
 	call compare
 	jc .listcmd
+
+	mov si,.kill
+	call compare
+	jc .killcmd
 	jmp .done
 .addcmd
 	mov si,login.usr
@@ -155,6 +172,8 @@ usercmd:
 	call newuser
 	jmp .done
 .initcmd
+	mov si,userchar
+	call killhashfile
 	mov ax,'0'
 	mov si,.root
 	mov di,.root
@@ -165,9 +184,18 @@ usercmd:
 	mov bx,void
 	mov di,void + 2
 	call printfilell
+	jmp .done
+.killcmd
+	mov si,login.usr
+	call print
+	mov di,buffer
+	call input
+	mov di,buffer
+	call killuser
 .done
 ret
 	.prmpt db 'USER>',0
 	.add db 'add',0
 	.init db 'init',0
 	.root db 'root',0
+	.kill db 'kill',0

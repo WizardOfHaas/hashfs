@@ -707,19 +707,19 @@ runlangfile:
 	mov ax,si
 	call length
 	add ax,1
-	mov [.tmp],ax
 	pop si
+	push ax
 	push si
 	call parse
 	call langcommand
 	pop si
-	add si,[.tmp]
+	pop ax
+	add si,ax
 	cmp byte[si],0
 	je .done
 	jmp .loop
 .done
 ret
-	.tmp dw 0
 
 incandpad:
 	call length
