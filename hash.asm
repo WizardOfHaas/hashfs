@@ -120,6 +120,10 @@ ret
 
 gethashfile:
 	push bx
+	mov bx,[user]
+	cmp bx,'0'
+	jne .unpriv
+	.ok
 	call gethash
 	call l2hts
 
@@ -139,6 +143,16 @@ gethashfile:
 	jmp .done
 .fail
 	jmp .retry
+.unpriv
+	push si
+	mov si,user
+	mov di,buffer
+	call copystring
+	pop si
+	mov di,buffer
+	call stringappend
+	mov si,buffer
+	jmp .ok
 .err
 	call err
 	mov ax,'er'
@@ -147,6 +161,10 @@ ret
 
 puthashfile:
 	push bx
+	mov bx,[user]
+	cmp bx,'0'
+	jne .unpriv
+	.ok
 	call gethash
 	call l2hts
 
@@ -166,6 +184,16 @@ puthashfile:
 	jmp .done
 .fail
 	jmp .retry
+.unpriv
+	push si
+	mov si,user
+	mov di,buffer
+	call copystring
+	pop si
+	mov di,buffer
+	call stringappend
+	mov si,buffer
+	jmp .ok
 .err
 	call err
 	mov ax,'er'

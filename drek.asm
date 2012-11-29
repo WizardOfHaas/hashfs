@@ -321,7 +321,7 @@ ret
 	doterm db 0,0
 	locked db 0,0
 	colors db 02,0,0,0
-        user db 0,0
+        user db '0',0,0
 	buffer times 128 db 0
 
 %INCLUDE "usr.asm"
@@ -976,6 +976,8 @@ ret
 
 locmd:
 	call killque
+	mov ax,'0'
+	mov [user],ax
 	call login
 	mov ax,shell
 	call schedule

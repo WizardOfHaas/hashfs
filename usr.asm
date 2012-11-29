@@ -49,15 +49,18 @@ ret
 
 killuser:		;DI - user to kill
 	call getuserdata
-	mov ax,si
-	call length
-	add si,ax
-	add si,3
+	cmp cx,0
+	je .done
+	cmp cx,void + 1024
+	jge .done
+	add si,7
 	mov ax,512
+	call getregs
 	call memcpy
 
 	mov si,userchar
 	call puthashfile
+.done
 ret
 
 getuserdata:		;DI - User Name out SI - hash AX - #
@@ -98,7 +101,6 @@ ret
 	.tmp db 0,0
 
 login:
-	mov byte[locked],1
 	mov si,.usr
 	call print
 	mov di,buffer
@@ -124,7 +126,6 @@ login:
 	jmp login
 .done
 	mov [user],ax
-	mov byte[locked],0
 	mov si,void
 	mov dx,void + 512
 	call memclear

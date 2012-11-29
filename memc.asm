@@ -196,3 +196,12 @@ memdump:
 ret
 	.bott db 'Bottom>',0
 	.void db 'void',0
+
+stringappend:		;DI - string SI - string to append
+	pusha
+	mov ax,di
+	call length
+	add di,ax
+	call copystring
+	popa
+ret
