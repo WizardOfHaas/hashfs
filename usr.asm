@@ -1,4 +1,4 @@
-newuser:	;Makes new user SI - name DI - passwd AX - priv level (0-root)
+newuser:	;Makes new user SI - name DI - passwd AX - priv level (0-root) char
 	pusha
 	mov bx,void
 	mov si,userchar
@@ -167,7 +167,12 @@ usercmd:
 	mov di,void + 4096
 	call input
 
-	mov ax,'1'
+	mov si,.grp
+	call print
+	mov di,void + 2048
+	call input
+	mov ax,[void + 2048]
+
 	mov si,buffer
 	mov di,void + 4096
 	call newuser
@@ -196,6 +201,7 @@ usercmd:
 .done
 ret
 	.prmpt db 'USER>',0
+	.grp db 'Group>',0
 	.add db 'add',0
 	.init db 'init',0
 	.root db 'root',0

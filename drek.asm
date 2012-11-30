@@ -70,6 +70,7 @@ Init:
 	call login
 main:			;Main command loop
 	call yield
+	call sanitycheck
 jmp main
 
 getthread:		;Turns command into memory location
@@ -323,6 +324,7 @@ ret
 	colors db 02,0,0,0
         user db '0',0,0
 	buffer times 128 db 0
+	sc0 db 0
 
 %INCLUDE "usr.asm"
 %INCLUDE "task.asm"
@@ -1020,6 +1022,15 @@ err:
 	mov si,error
 	call print
 	popa
+ret
+
+sanitycheck:
+	cmp byte[sc0],0
+	jne .err
+	jmp .done
+.err
+	call bsod
+.done
 ret
 
 bsod:
