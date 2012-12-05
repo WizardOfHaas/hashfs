@@ -48,16 +48,27 @@ useraddstub:
 ret
 
 killuser:		;DI - user to kill
-	call getuserdata
+	call getuserdata ;Parser fucking up
 	cmp cx,0
 	je .done
-	cmp cx,void + 1024
-	jge .done
-	add si,7
+
+	pusha
+	mov si,userchar
+	mov bx,void
+	call gethashfile
+	popa
+
+	push di
+	mov ax,si
+	call length
+	add ax,1
+	add si,ax
+	pop di
 	mov ax,512
 	call getregs
 	call memcpy
 
+	mov bx,void
 	mov si,userchar
 	call puthashfile
 .done
