@@ -13,7 +13,8 @@
 ;	
 ;	copyright Sean Haas 2011-12
 ORG 100h
-
+jmp short Init
+sc1 db 0
 Init:
 	cli
 	mov ax,0
@@ -428,6 +429,7 @@ input:			;Take keyboard input
         int 0x10
         mov al,0x0A
         int 0x10
+	call sanitycheck
 ret
 
 printret:
@@ -677,7 +679,7 @@ printhelp:
 ret
 	.hlp1 db 'help - print help message',13,10,0
 	.hlp2 db 'stack - print stack',13,10,0
-	.hlp3 db 'file - file manager',13,10,0
+	.hlp3 db 'user - user manager',13,10,0
 	.hlp4 db 'dte - text editor',13,10,0
 	.hlp5 db 'regs - print registers',13,10,0
 	.hlp6 db 'mem - display memory in kbs',13,10,0
@@ -685,7 +687,7 @@ ret
 	.hlp8 db 'clear - clear screen',13,10,0
 	.hlp9 db 'ps - list running tasks',13,10,0
 	.hlp12 db 'reboot - reboot computer',13,10,0
-	.hlp13 db 'log - lock computer',13,10,0
+	.hlp13 db 'lo - log out',13,10,0
 
 getuptime:
 	call getpit
@@ -1027,11 +1029,23 @@ ret
 sanitycheck:
 	cmp byte[sc0],0
 	jne .err
+	cmp byte[sc1],0
+	jne .err
 	jmp .done
 .err
-	call bsod
+	call scfail
 .done
 ret
+
+scfail:
+	mov byte[colors],23
+	call clear
+	mov si,.msg
+	call print
+	call waitkey
+	call reboot1
+ret
+	.msg db 'A sanity chack has failed most likely due to a buffer overflow',13,10,'Press any key to reboot...',13,10,0
 
 bsod:
 	pusha

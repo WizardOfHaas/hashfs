@@ -48,15 +48,15 @@ useraddstub:
 ret
 
 killuser:		;DI - user to kill
-	call getuserdata ;Parser fucking up
+	call getuserdata
 	cmp cx,0
 	je .done
 
-	pusha
+	pusha			;Kludge starts here
 	mov si,userchar
 	mov bx,void
 	call gethashfile
-	popa
+	popa			;End kludge
 
 	push di
 	mov ax,si
@@ -112,6 +112,7 @@ ret
 	.tmp db 0,0
 
 login:
+	mov byte[locked],1
 	mov si,.usr
 	call print
 	mov di,buffer
@@ -140,6 +141,7 @@ login:
 	mov si,void
 	mov dx,void + 512
 	call memclear
+	mov byte[locked],0
 ret
 	.usr db 'UserName>',0
 	.pass db 'Password>',0
