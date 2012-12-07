@@ -22,9 +22,7 @@ ret
 
 savecurs:
 	pusha
-	mov ah,03h
-	mov bx,0
-	int 10h
+	call getcurs
 	mov byte[.x],dl
 	mov byte[.y],dh
 	popa
@@ -40,6 +38,12 @@ loadcurs:
 	mov dh,byte[savecurs.y]
 	int 10h
 	popa
+ret
+
+getcurs:
+	mov ah,03h
+	mov bx,0
+	int 10h
 ret
 
 movecurs:

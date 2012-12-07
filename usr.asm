@@ -111,6 +111,30 @@ getuserdata:		;DI - User Name out SI - hash AX - #
 ret
 	.tmp db 0,0
 
+hidepasswd:
+	pusha
+	mov ax,buffer
+	call length
+	pusha
+	call getcurs
+	sub dh,1
+	mov dl,9
+	call movecurs
+	popa
+	xor bx,bx
+.loop
+	mov si,.mask
+	call print
+	cmp ax,bx
+	je .done
+	add bx,1
+	jmp .loop
+.done
+	call printret
+	popa
+ret
+	.mask db '*',0
+
 login:
 	mov byte[locked],1
 	mov si,.usr
@@ -126,6 +150,7 @@ login:
 	call print
 	mov di,buffer
 	call input
+	call hidepasswd
 	mov si,buffer
 	call gethash
 	call tostring
