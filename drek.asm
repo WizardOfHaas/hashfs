@@ -181,6 +181,10 @@ getthread:		;Turns command into memory location
 	call compare
 	jc .killcmd
 
+	mov si,bf
+	call compare
+	jc .bfcmd
+
 	mov si,rpc
 	call compare
 	jc .rpccmd
@@ -262,6 +266,9 @@ getthread:		;Turns command into memory location
 .killcmd
 	call killcmd
 	jmp .done
+.bfcmd
+	mov ax,bfcmd
+	jmp .done
 .rpccmd
 	mov ax,rpccmd
 .done
@@ -326,6 +333,7 @@ ret
 	killchar db 'kill',0
 	dte db 'dte',0
 	mem db 'mem',0
+	bf db 'bf',0
 	term db 'term',0
 	relist db 'relist',0
 	color db 'color',0
@@ -356,6 +364,8 @@ unsecure:
 %INCLUDE "shell.asm"
 %INCLUDE "dte.asm"
 %INCLUDE "lang.asm"
+%INCLUDE "vm.asm"
+%INCLUDE "bf.asm"
 
 print:			;Print string
 	pusha
