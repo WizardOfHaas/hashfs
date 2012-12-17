@@ -13,6 +13,11 @@ shell:
 	mov si,buffer
 	call parse
 	call langcommand
+	cmp ax,'er'
+	jne .done	
+
+	mov si,buffer
+	call runbf
 	jmp .done
 .err
 	call err

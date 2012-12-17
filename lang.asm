@@ -95,7 +95,7 @@ langcommand:
 	cmp byte[di],'>'
 	je .bigout
 
-	mov ax,'nc'
+	mov ax,'er'
 	jmp .done	
 .end
 	jmp runlang.done
@@ -603,7 +603,7 @@ langcommand:
 	jmp .done
 .err
 	call err
-	mov byte [void], 0
+	mov ax,'er'
 	jmp .done
 .done
 ret

@@ -4,9 +4,19 @@ bfcmd:
 	mov di,buffer
 	call input
 	mov si,buffer
+	call runbffile
+ret
+	.p db 'file>',0
+
+runbffile:
+	mov bx,void + 1024
+	call gethashfile
+	mov bx,ram
+	mov ax,ram + 256
+	call zeroram
+	mov si,void + 1024
 	call runbf
 ret
-	.p db '>',0
 
 runbf:
 	call compbf
