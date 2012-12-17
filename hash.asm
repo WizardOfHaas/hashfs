@@ -18,9 +18,8 @@ ret
 
 userhash:
 	mov si,.prmpt
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	
 	mov si,buffer
 	mov di,.put
@@ -41,13 +40,11 @@ userhash:
 	jmp .done
 .putcmd
 	mov si,.name
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	mov si,.outchar
-	call print
 	mov di,void + 100
-	call input
+	call getinput
 
 	mov si,buffer
 	mov bx,void + 100
@@ -55,9 +52,8 @@ userhash:
 	jmp .done
 .getcmd
 	mov si,.name
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	
 	mov si,buffer
 	mov bx,void
@@ -68,9 +64,8 @@ userhash:
 	jmp .done
 .killcmd
 	mov si,.name
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	mov si,buffer
 	call killhashfile	
 	jmp .done

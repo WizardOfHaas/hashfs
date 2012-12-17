@@ -1,9 +1,8 @@
 gotask:	
 	.start
 	mov si,.name
-	call print
 	mov di,.file
-	call input
+	call getinput
 
 	mov di,.file
 	call findfile
@@ -149,6 +148,16 @@ kill:			;IN - ax, pid
 	mov word[bx],00
 	popa
 ret
+
+killcmd:
+	mov si,.pid
+	mov di,buffer
+	call getinput
+	mov si,buffer
+	call toint
+	call kill
+ret
+	.pid db 'PID>',0
 
 killque:		;Deschedule all tasks
 	pusha

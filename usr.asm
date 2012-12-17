@@ -138,18 +138,16 @@ ret
 login:
 	mov byte[locked],1
 	mov si,.usr
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	mov di,buffer
 	call getuserdata
 	push ax
 	push si
 
 	mov si,.pass
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	call hidepasswd
 	mov si,buffer
 	call gethash
@@ -173,9 +171,8 @@ ret
 
 usercmd:
 	mov si,.prmpt
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	
 	mov di,buffer
 	mov si,.add
@@ -196,19 +193,16 @@ usercmd:
 	jmp .done
 .addcmd
 	mov si,login.usr
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	
 	mov si,login.pass
-	call print
 	mov di,void + 4096
-	call input
+	call getinput
 
 	mov si,.grp
-	call print
 	mov di,void + 2048
-	call input
+	call getinput
 	mov ax,[void + 2048]
 
 	mov si,buffer
@@ -231,9 +225,8 @@ usercmd:
 	jmp .done
 .killcmd
 	mov si,login.usr
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	mov di,buffer
 	call killuser
 .done

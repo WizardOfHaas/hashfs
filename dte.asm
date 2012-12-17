@@ -1,9 +1,8 @@
 textedit:
 	.start
 	mov si,.name
-	call print
 	mov di,.filename
-	call input
+	call getinput
 
 	mov si,.filename
 	call isfileempty
@@ -51,9 +50,8 @@ textedit:
 .edit
 	call printret
 	mov si,.line
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	cmp byte[buffer],'q'
 	je .end
 	cmp byte[buffer],'t'
@@ -67,9 +65,8 @@ textedit:
 	push si
 	call print
 	mov si,.outchar
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	pop di
 	mov si,buffer
 	call fixsize

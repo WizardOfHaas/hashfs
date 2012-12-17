@@ -67,6 +67,8 @@ Init:
 	call print
 	call printret
 
+	;call rpcind
+
 	call loadints
 	call login
 main:			;Main command loop
@@ -175,6 +177,14 @@ getthread:		;Turns command into memory location
 	call compare
 	jc .locmd
 
+	mov si,killchar
+	call compare
+	jc .killcmd
+
+	mov si,rpc
+	call compare
+	jc .rpccmd
+
 	.err
         mov ax,'fl'
 	
@@ -248,6 +258,12 @@ getthread:		;Turns command into memory location
 	jmp .done
 .locmd
 	mov ax,locmd
+	jmp .done
+.killcmd
+	call killcmd
+	jmp .done
+.rpccmd
+	mov ax,rpccmd
 .done
 ret
 
@@ -290,6 +306,7 @@ ret
 	lo db 'lo',0
 	file db 'file',0
 	log db 'log',0
+	rpc db 'rpc',0
 	lang db 'lang',0
 	langprmpt db 'LANG>',0
 	quit db 'quit',0
@@ -306,6 +323,7 @@ ret
 	bsodmsg db 13,10,13,10,'          Look what you`ve done :-(',13,10,'          Bang on the keyboard multiple times to walk away',0
 	task db 'task',0
 	swap db 'swap',0
+	killchar db 'kill',0
 	dte db 'dte',0
 	mem db 'mem',0
 	term db 'term',0
@@ -355,6 +373,11 @@ print:			;Print string
 	call serialprint
 .done
 	popa
+ret
+
+getinput:
+	call print
+	call input
 ret
 
 dotdot:
@@ -416,7 +439,10 @@ input:			;Take keyboard input
 	cmp byte[locked],1
 	je .loop
 	call printret
-	call main
+	call killque
+	mov ax,shell
+	call schedule
+	jmp main
 	jmp .done
 .doterm
 	call serialinput
@@ -620,9 +646,8 @@ ret
 
 catchfire:
 	mov si,.hcfprmpt
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	mov si,buffer
 	call toint
 	mov bx,ax
@@ -992,9 +1017,8 @@ logit:
 	mov byte[locked],1
 	
 	mov si,.pass
-	call print
 	mov di,.secret
-	call input
+	call getinput
 
 	mov ah,05
 	mov al,3
@@ -1002,9 +1026,8 @@ logit:
 	call clear
 .loop
 	mov si,.pass
-	call print
 	mov di,buffer
-	call input
+	call getinput
 	mov si,.secret
 	mov di,buffer
 	call compare

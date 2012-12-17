@@ -642,27 +642,6 @@ parse2ints:
 	pop ax
 ret
 
-dreklang:
-	mov bx,0
-	call runlang
-.loop
-	mov si,langprmpt
-	call print
-	mov di,buffer
-	call input
-
-	mov si,buffer
-	mov di,quit
-	call compare
-	jc .done
-
-	mov si,buffer
-	call parse
-	call langcommand
-	jmp .loop
-.done
-ret
-
 runlang:
 	.start
 	mov si,.name
