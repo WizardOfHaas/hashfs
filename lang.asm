@@ -90,6 +90,10 @@ langcommand:
 	call compare
 	jc .load
 
+	mov di,bf
+	call compare
+	jc .bfcmd
+
 	mov di,.cmdbuff
 	call getlastchar
 	cmp byte[di],'>'
@@ -600,6 +604,10 @@ langcommand:
 	jmp .done
 .load
 	call loadramdisk
+	jmp .done
+.bfcmd
+	mov si,bx
+	call runbffile
 	jmp .done
 .err
 	call err

@@ -11,15 +11,16 @@ ret
 runbffile:
 	mov bx,void + 1024
 	call gethashfile
-	mov bx,ram
-	mov ax,ram + 256
-	call zeroram
 	mov si,void + 1024
 	call runbf
 ret
 
 runbf:
 	call compbf
+
+	mov bx,ram
+	mov ax,ram + 256
+	call zeroram
 
 	call killque
 	call alocvm

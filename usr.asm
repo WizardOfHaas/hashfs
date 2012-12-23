@@ -74,12 +74,16 @@ killuser:		;DI - user to kill
 .done
 ret
 
-getuserdata:		;DI - User Name out SI - hash AX - #
+getuserdata:
 	pusha
 	mov si,userchar
 	mov bx,void
 	call gethashfile
 	popa
+	call parseuserdata
+ret
+
+parseuserdata:		;DI - User Name out SI - hash AX - #
 	mov si,void + 2
 .loop
 	pusha
@@ -136,12 +140,15 @@ ret
 	.mask db '*',0
 
 login:
+	mov bx,void
+	mov si,userchar
+	call gethashfile
 	mov byte[locked],1
 	mov si,.usr
 	mov di,buffer
 	call getinput
 	mov di,buffer
-	call getuserdata
+	call parseuserdata
 	push ax
 	push si
 
@@ -164,10 +171,13 @@ login:
 	mov si,void
 	mov dx,void + 512
 	call memclear
+	mov bx,.script
+	call runlangfile
 	mov byte[locked],0
 ret
 	.usr db 'UserName>',0
 	.pass db 'Password>',0
+	.script db 'run',0
 
 usercmd:
 	mov si,.prmpt
