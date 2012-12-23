@@ -171,13 +171,13 @@ login:
 	mov si,void
 	mov dx,void + 512
 	call memclear
-	mov bx,.script
+	mov di,.run
 	call runlangfile
 	mov byte[locked],0
 ret
 	.usr db 'UserName>',0
 	.pass db 'Password>',0
-	.script db 'run',0
+	.run db 'run',0
 
 usercmd:
 	mov si,.prmpt
