@@ -1,15 +1,6 @@
 hashfs
 ===
 
-<<<<<<< HEAD
-Hash based file system for fast storage of data.
-This version of Dreckig OS has all sorts of new features.
-Now it has users and groups and file privledges.
-To login as a privledged user use username: root password: root.
-User:sean password: sean is an underprivledged user.
-=======
-
-
 This is a vastly more advanced version of Dreckig OS. First off, it uses my experimental hashfs file system. 
 It is integrated so it functions just like normal Dreckig OS on the surface as far as files, but is running on new 
 drivers. Hashfs is faster and simpler than the FAT12/bFS in standard Dreckig OS, so that opened up quite a few more 
@@ -29,4 +20,3 @@ It virtualizes a novel 8-bit ISA with synchronization primitives built in.
 The brainfuck compiler compiles brainfuck code to byte-code that is ran on MVM.
 To run brainfuck code just type it on the command line. Or to run a file full of the code just use the bf command,
 it then prompts for the file, or you can use the bf command in lang: bf filename.
->>>>>>> d9d3fb5b260f7713235d527fb729eab2350fa72f
