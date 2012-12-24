@@ -67,8 +67,6 @@ Init:
 	call print
 	call printret
 
-	;call rpcind
-
 	call loadints
 	call login
 main:			;Main command loop

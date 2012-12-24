@@ -114,6 +114,7 @@ putfiletimed:
 ret
 
 gethashfile:
+	call resetfloppy
 	push bx
 	mov bx,[user]
 	cmp bx,'0'
@@ -150,6 +151,9 @@ gethashfile:
 	jmp .ok
 .err
 	call err
+	mov ax,bx
+	add ax,512
+	call zeroram
 	mov ax,'er'
 .done
 ret

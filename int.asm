@@ -1,4 +1,12 @@
 loadints:
+	mov di,except
+	mov bx,0
+	call loadint
+	
+	mov di,except
+	mov bx,6
+	call loadint
+
 	mov di,int32h
 	mov bx,32h
 	call loadint
@@ -16,4 +24,11 @@ ret
 
 int32h:
 	call yield
+iret
+
+except:
+	call err
+	pop ax
+	add ax,2
+	push ax
 iret
