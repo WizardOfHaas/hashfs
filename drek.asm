@@ -183,6 +183,10 @@ getthread:		;Turns command into memory location
 	call compare
 	jc .bfcmd
 
+	mov si,crypt
+	call compare
+	jc .cryptcmd
+
 	mov si,rpc
 	call compare
 	jc .rpccmd
@@ -267,6 +271,9 @@ getthread:		;Turns command into memory location
 .bfcmd
 	mov ax,bfcmd
 	jmp .done
+.cryptcmd
+	mov ax,cryptcmd
+	jmp .done
 .rpccmd
 	mov ax,rpccmd
 .done
@@ -309,7 +316,7 @@ ret
 	catch db 'catch',0
 	regs db 'regs',0
 	lo db 'lo',0
-	file db 'file',0
+	crypt db 'crypt',0
 	log db 'log',0
 	rpc db 'rpc',0
 	lang db 'lang',0
@@ -356,6 +363,7 @@ ret
 %INCLUDE "memc.asm"	
 %INCLUDE "term.asm"
 %INCLUDE "hash.asm"
+%INCLUDE "crypt.asm"
 %INCLUDE "bFS.asm"
 %INCLUDE "int.asm"
 unsecure:
@@ -1080,19 +1088,19 @@ ret
 
 bsod:
 	pusha
-	mov ah,05h
-	mov al,0
-	int 10h
-	mov dx,0
-	mov bh,0
-	mov ah,2h
-	int 10h
-	mov cx,2000
-	mov bh,0
-	mov bl,17h
-	mov al,20h
-	mov ah,9h
-	int 10h
+	;mov ah,05h
+	;mov al,0
+	;int 10h
+	;mov dx,0
+	;mov bh,0
+	;mov ah,2h
+	;int 10h
+	;mov cx,2000
+	;mov bh,0
+	;mov bl,17h
+	;mov al,20h
+	;mov ah,9h
+	;int 10h
 
 	mov si,bsodmsg
 	call print
@@ -1149,6 +1157,5 @@ cpuoff:
 kernend db 13,10,'Dreckig Kernel End',13,10,0
 void db 0,0,'Void Start',0,0
 times 5 db '0'
-%INCLUDE "files.asm"
 filesend
 %INCLUDE "splash.asm"

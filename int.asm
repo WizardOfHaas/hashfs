@@ -27,8 +27,12 @@ int32h:
 iret
 
 except:
-	call err
+	pusha
+	mov si,.err
+	call print
+	popa
 	pop ax
 	add ax,2
 	push ax
 iret
+	.err db 'Exception!',13,10,0
