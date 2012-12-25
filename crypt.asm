@@ -1,4 +1,6 @@
 getrnd:				;Returns psudo-random number in ax
+	call killque
+
 	xor ax,ax
 	in al,40h
 	mov ah,al
@@ -26,14 +28,16 @@ cryptcmd:
 	call waitkey
 	call initdisk
 .done
+	call killque
+	mov ax,shell
+	call schedule
 ret
 	.msg db 'Warning! All data on disk will be erased! Insert work disk!',13,10,'Press any key to continue...',13,10,0
 	.prmpt db 'crypt>',0
 	.init db 'init',0
 
 initdisk:
-	call resetfloppy
-	mov ax,64
+	mov ax,0
 .loop
 	cmp ax,2880
 	jge .done
@@ -86,7 +90,7 @@ putsect:
 	xor di,di
 	.retry
 	inc di
-	cmp di,5
+	cmp di,6
 	jge .err
 	pusha
 	stc
@@ -98,6 +102,11 @@ putsect:
 	jmp .retry
 .err
 	mov si,.errmsg
+	call print
+	xchg al,ah
+	mov ah,0
+	call tostring
+	mov si,ax
 	call print
 .done
 	popa
