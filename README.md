@@ -1,4 +1,4 @@
-hashfs
+hashfs/Dreckig OS
 ===
 
 This is a vastly more advanced version of Dreckig OS. First off, it uses my experimental hashfs file system. 
