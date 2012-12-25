@@ -33,21 +33,24 @@ ret
 
 initdisk:
 	call resetfloppy
-	xor dx,dx
+	mov ax,64
 .loop
-	cmp dx,2880
+	cmp ax,2880
 	jge .done
 	call getregs
-	push dx
+	call putrndsect
+	add ax,1
+	jmp .loop
+.done
+ret
+
+putrndsect:
+	pusha
 	mov si,void
 	call genrndsect
 	mov bx,void
-	pop dx
-	mov ax,dx
 	call putsect
-	add dx,1
-	jmp .loop
-.done
+	popa
 ret
 
 genrndsect:
@@ -83,7 +86,7 @@ putsect:
 	xor di,di
 	.retry
 	inc di
-	cmp di,3
+	cmp di,5
 	jge .err
 	pusha
 	stc
