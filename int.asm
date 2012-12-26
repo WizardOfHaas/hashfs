@@ -7,6 +7,10 @@ loadints:
 	mov bx,6
 	call loadint
 
+	mov di,except
+	mov bx,0xC
+	call loadint
+
 	mov di,int32h
 	mov bx,32h
 	call loadint

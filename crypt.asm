@@ -23,9 +23,9 @@ cryptcmd:
 	jc .initcmd
 	jmp .done
 .initcmd
-	mov si,.msg
-	call print
-	call waitkey
+	;mov si,.msg
+	;call print
+	;call waitkey
 	call initdisk
 .done
 ret
@@ -34,18 +34,16 @@ ret
 	.init db 'init',0
 
 initdisk:
-	mov ax,0
+	mov di,0
 .loop
-	cmp ax,2880
+	cmp di,2880
 	jge .done
 	call getregs
-	push ax
 	mov si,void
 	call genrndsect
 	mov bx,void
 	call puthashfile
-	pop ax
-	add ax,1
+	add di,1
 	jmp .loop
 .done
 ret
@@ -57,7 +55,7 @@ genrndsect:
 	add ax,512
 	call zeroram
 	popa
-	pusha
+
 	mov si,void
 	xor bx,bx
 .loop
@@ -69,7 +67,6 @@ genrndsect:
 	add bx,1
 	jmp .loop
 .done
-	popa
 ret
 
 putsect:

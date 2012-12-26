@@ -67,7 +67,7 @@ Init:
 	call print
 	call printret
 
-	;call loadints
+	call loadints
 	call login
 main:			;Main command loop
 	call yield
