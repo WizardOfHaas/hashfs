@@ -1,15 +1,8 @@
 getrnd:				;Returns psudo-random number in ax
-	push bx
 	xor ax,ax
 	in al,40h
-	mov ah,al
-	in al,40h
-	xor al,ah
-	call gethash
 	xchg al,ah
 	in al,40h
-	xor ah,al
-	pop bx
 ret
 
 cryptcmd:
@@ -23,9 +16,9 @@ cryptcmd:
 	jc .initcmd
 	jmp .done
 .initcmd
-	;mov si,.msg
-	;call print
-	;call waitkey
+	mov si,.msg
+	call print
+	call waitkey
 	call initdisk
 .done
 ret
