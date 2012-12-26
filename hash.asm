@@ -159,6 +159,7 @@ gethashfile:
 ret
 
 puthashfile:
+	pusha
 	push bx
 	mov bx,[user]
 	cmp bx,'0'
@@ -197,6 +198,7 @@ puthashfile:
 	call err
 	mov ax,'er'
 .done
+	popa
 ret
 
 isfileempty:

@@ -305,7 +305,7 @@ ret
 	ips db '1m instructions in ',0
 	ipsticks db ' ticks',0
 	help db 'help',0
-        header db ' ____',13,10,'| 00_|_ DreckigOS',13,10,'| 0| 0 | v0.006 Alpha',13,10,'|__|___| 2011-12 Sean Haas',13,10,0
+        header db ' ____',13,10,'| 00_|_ DreckigOS',13,10,'| 0| 0 | v0.007 Alpha',13,10,'|__|___| 2011-12 Sean Haas',13,10,0
         prompt db '?>',0
         error db 'Error!',13,10,0
         reboot db 'reboot',0

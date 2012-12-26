@@ -1,6 +1,5 @@
 getrnd:				;Returns psudo-random number in ax
-	call killque
-
+	push bx
 	xor ax,ax
 	in al,40h
 	mov ah,al
@@ -10,6 +9,7 @@ getrnd:				;Returns psudo-random number in ax
 	xchg al,ah
 	in al,40h
 	xor ah,al
+	pop bx
 ret
 
 cryptcmd:
@@ -28,9 +28,6 @@ cryptcmd:
 	call waitkey
 	call initdisk
 .done
-	call killque
-	mov ax,shell
-	call schedule
 ret
 	.msg db 'Warning! All data on disk will be erased! Insert work disk!',13,10,'Press any key to continue...',13,10,0
 	.prmpt db 'crypt>',0
@@ -42,19 +39,15 @@ initdisk:
 	cmp ax,2880
 	jge .done
 	call getregs
-	call putrndsect
-	add ax,1
-	jmp .loop
-.done
-ret
-
-putrndsect:
-	pusha
+	push ax
 	mov si,void
 	call genrndsect
 	mov bx,void
-	call putsect
-	popa
+	call puthashfile
+	pop ax
+	add ax,1
+	jmp .loop
+.done
 ret
 
 genrndsect:
@@ -64,19 +57,19 @@ genrndsect:
 	add ax,512
 	call zeroram
 	popa
+	pusha
 	mov si,void
 	xor bx,bx
 .loop
 	cmp bx,512
 	jg .done
-	push bx
 	call getrnd
 	mov [si],ax
-	pop bx
 	add si,1
 	add bx,1
 	jmp .loop
 .done
+	popa
 ret
 
 putsect:
