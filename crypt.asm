@@ -124,25 +124,29 @@ ret
 	.errmsg db 'Write error!',13,10,0
 
 encrypt:
+	xor bl,bl
 .loop
-	cmp byte[si],0
+	cmp word[si],0
 	je .done
 	mov ax,[user]
-	add byte[si],13
+	add byte[si],bl
 	xor byte[si],al
 	add si,1
+	add bl,1
 	jmp .loop
 .done
 ret
 
 decrypt:
+	xor bl,bl
 .loop
-	cmp byte[si],0
+	cmp word[si],0
 	je .done
 	mov ax,[user]
 	xor byte[si],al
-	sub byte[si],13
+	sub byte[si],bl
 	add si,1
+	add bl,1
 	jmp .loop
 .done
 ret
