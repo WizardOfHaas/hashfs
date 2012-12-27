@@ -155,10 +155,26 @@ gethashfile:
 	add ax,512
 	call zeroram
 	mov ax,'er'
+	jmp .end
 .done
+	pusha
+	cmp byte[crypton],0
+	je .clear
+	mov si,bx
+	call decrypt
+	.clear
+	popa
+.end
 ret
 
 puthashfile:
+	pusha
+	cmp byte[crypton],0
+	je .clear
+	mov si,bx
+	call encrypt
+	.clear
+	popa
 	pusha
 	push bx
 	mov bx,[user]

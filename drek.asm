@@ -363,13 +363,13 @@ ret
 %INCLUDE "memc.asm"	
 %INCLUDE "term.asm"
 %INCLUDE "hash.asm"
-%INCLUDE "crypt.asm"
 %INCLUDE "bFS.asm"
 %INCLUDE "int.asm"
 unsecure:
 %INCLUDE "shell.asm"
 %INCLUDE "dte.asm"
 %INCLUDE "lang.asm"
+%INCLUDE "crypt.asm"
 %INCLUDE "vm.asm"
 %INCLUDE "bf.asm"
 
