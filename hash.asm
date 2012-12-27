@@ -171,8 +171,11 @@ puthashfile:
 	pusha
 	cmp byte[crypton],0
 	je .clear
+	push bx
 	mov si,bx
 	call encrypt
+	pop bx
+	call fillfile
 	.clear
 	popa
 	pusha
@@ -241,20 +244,13 @@ ret
 getfilesize:
 	xor ax,ax
 .loop
-	cmp byte[bx],0
-	je .test
+	cmp word[bx],0
+	je .done
 	cmp ax,512
 	jge .done		
 	add ax,1
 	add bx,1
 	jmp .loop
-.test
-	add bx,1
-	cmp byte[bx],0
-	jne .loop
-	add bx,1
-	cmp byte[bx],0
-	jne .loop
 .done
 ret
 

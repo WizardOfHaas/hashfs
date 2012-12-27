@@ -76,7 +76,6 @@ genrndsect:
 	call zeroram
 	popa
 
-	mov si,void
 	xor bx,bx
 .loop
 	cmp bx,512
@@ -149,4 +148,12 @@ decrypt:
 	add bl,1
 	jmp .loop
 .done
+ret
+
+fillfile:
+	mov si,bx
+	call getfilesize
+	mov si,bx
+	add si,2
+	call genrndsect
 ret

@@ -1021,6 +1021,7 @@ ret
 
 locmd:
 	call killque
+	mov byte[crypton],0
 	mov ax,'0'
 	mov [user],ax
 	call login
