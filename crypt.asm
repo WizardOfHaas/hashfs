@@ -1,8 +1,8 @@
 getrnd:				;Returns psudo-random number in ax
-	xor ax,ax
+	push bx	
+	call getpit
 	in al,40h
-	xchg al,ah
-	in al,40h
+	pop bx
 ret
 
 cryptcmd:
@@ -31,15 +31,24 @@ initdisk:
 .loop
 	cmp di,2880
 	jge .done
-	call getregs
 	mov si,void
 	call genrndsect
 	mov bx,void
-	call puthashfile
+	mov ax,di
+	call putsect
+	call printdot
 	add di,1
 	jmp .loop
 .done
 ret
+
+printdot:
+	pusha
+	mov si,.dot
+	call print
+	popa
+ret
+	.dot db '.',0
 
 genrndsect:
 	pusha
