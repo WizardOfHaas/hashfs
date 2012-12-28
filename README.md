@@ -20,3 +20,8 @@ It virtualizes a novel 8-bit ISA with synchronization primitives built in.
 The brainfuck compiler compiles brainfuck code to byte-code that is ran on MVM.
 To run brainfuck code just type it on the command line. Or to run a file full of the code just use the bf command,
 it then prompts for the file, or you can use the bf command in lang: bf filename.
+
+And now there is crypt, the extension to HashFS that makes is an encrypted, stenographic file system. 
+It works using the crypt command, use init in crypt to format a disk (Fills it with random garbage).
+Then use on in crypt to encrypt and decrypt text automatically, it is completely transparent to the user.
+Oh, and make sure that the run scripts for users are not encrypted, that can make things get messy!
