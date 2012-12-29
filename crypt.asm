@@ -143,6 +143,7 @@ encrypt:
 ret
 
 decrypt:
+	pusha
 	xor bl,bl
 .loop
 	cmp word[si],0
@@ -154,6 +155,7 @@ decrypt:
 	add bl,1
 	jmp .loop
 .done
+	popa
 ret
 
 fillfile:

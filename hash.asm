@@ -162,6 +162,10 @@ gethashfile:
 	je .clear
 	mov si,bx
 	call decrypt
+	call getfilesize
+	mov ax,bx
+	add ax,512
+	call zeroram
 	.clear
 	popa
 .end
