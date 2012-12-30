@@ -8,6 +8,7 @@ getrnd:				;Returns psudo-random number in ax
 ret
 
 cryptcmd:
+	call cryptstat
 	mov si,.prmpt
 	mov di,buffer
 	call getinput
@@ -40,6 +41,7 @@ cryptcmd:
 	mov byte[crypton],0
 	mov si,.offmsg
 	call print
+	jmp .done
 .done
 ret
 	.msg db 'Warning! All data on disk will be erased! Insert work disk!',13,10,'Press any key to continue...',13,10,0
@@ -47,8 +49,27 @@ ret
 	.init db 'init',0
 	.on db 'on',0
 	.off db 'off',0
+	.status db 'stat',0
 	.onmsg db 'Encryption layer on',13,10,0
 	.offmsg db 'Encryption layer off',13,10,0
+
+cryptstat:
+	pusha
+	mov si,.statmsg
+	call print
+	cmp byte[crypton],0
+	je .off
+	mov si,cryptcmd.on
+	call print
+	jmp .done
+.off
+	mov si,cryptcmd.off
+	call print
+.done
+	call printret
+	popa
+ret
+	.statmsg db 'Crypt status: ',0
 
 initdisk:
 	mov di,0
