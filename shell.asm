@@ -5,6 +5,9 @@ shell:
         mov di,buffer
         call input
 
+	cmp byte[buffer],0
+	je .err
+
 	mov di,buffer
 	call commands
 	cmp ax,'fl'
@@ -16,11 +19,13 @@ shell:
 	cmp ax,'er'
 	jne .done	
 
+	cmp byte[buffer],95
+	jge .err
+
 	mov si,buffer
 	call runbf
 	jmp .done
 .err
-	call err
 	jmp .done
 .done
 ret
@@ -37,11 +42,9 @@ ret
 
 loadcurs:
 	pusha
-	mov ah,02h
-	mov bx,0
 	mov dl,byte[savecurs.x]
 	mov dh,byte[savecurs.y]
-	int 10h
+	call movecurs
 	popa
 ret
 
@@ -56,18 +59,6 @@ movecurs:
 	mov ah,02h
 	mov bx,0
 	int 10h
-	popa
-ret
-
-pswin:
-	pusha
-	call savecurs
-	mov dh,72
-	mov dl,1
-	call movecurs
-	call tasklist
-.done
-	call loadcurs
 	popa
 ret
 

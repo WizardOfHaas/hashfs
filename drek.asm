@@ -40,6 +40,8 @@ Init:
 	mov word[currpid],taskque
 	mov ax,0
 	call multi
+	mov ax,wintest
+	call schedule
 	mov ax,shell
 	call schedule
 	mov word[shellpid],ax
@@ -288,11 +290,12 @@ commands:
 	jne .exclude
 	.ok
 	call coopcall
-	jmp .err
+	jmp .done
 .exclude
 	cmp ax,unsecure
 	jge .ok
 .err
+.done
 ret
 
         loading db 13,10,'Loading',0
@@ -476,8 +479,17 @@ ret
 
 printret:
 	pusha
+	call getcurs
+	cmp dl,75
+	jge .side
 	mov si,return
 	call print
+	jmp .done
+.side
+	mov dl,70
+	add dh,1
+	call movecurs
+.done
 	popa
 ret
 

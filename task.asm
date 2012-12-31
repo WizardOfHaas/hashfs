@@ -272,7 +272,6 @@ yield:
 	push bx
 	call pullregs
 	pop bx
-	xchg bx,bx
 	call word[bx]
 .done
 	popa
@@ -281,12 +280,11 @@ ret
 
 coopcall:
 	call schedule
-	mov word[.pid],ax
+	push ax
 	call yield
-	mov ax,word[.pid]
+	pop ax
 	call kill
 ret
-	.pid db 0,0,0
 
 cleartime:
 	pusha
@@ -301,6 +299,19 @@ getsystime:
 	xor ax,ax
 	int 1Ah
 ret
+
+wintest:
+	call savecurs
+
+	mov dh,0
+	mov dl,70
+	call movecurs
+	call tasklist
+
+	call loadcurs
+	call yield
+ret
+	.msg db 'test!',0
 
 currpid db 0,0
 taskque times 32 db 0
