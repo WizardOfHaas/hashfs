@@ -302,7 +302,8 @@ langcommand:
 	popa
 
 	mov di,bx
-	call commands
+	call getthread
+	call schedule
 	.sysok
 	cmp ax,'fl'
 	je .syserr

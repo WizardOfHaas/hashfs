@@ -754,21 +754,3 @@ loadramdisk:
 	call gethashfile
 ret
 	.disk db 'disk',0
-
-backupramdisk:
-	pusha
-	mov di,void + 5120
-	mov si,void
-	mov ax,512
-	call memcpy
-	popa
-ret
-
-restoreramdisk:
-	pusha
-	mov si,void + 5120
-	mov di,void
-	mov ax,512
-	call memcpy
-	popa
-ret

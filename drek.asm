@@ -34,14 +34,13 @@ Init:
 	mov si,filesend + 1
 	mov dx,filesend + 1024
 	call memclear
+	call genmemtable
 
 	mov si,loadmulti
 	call print
 	mov word[currpid],taskque
 	mov ax,0
 	call multi
-	mov ax,wintest
-	call schedule
 	mov ax,shell
 	call schedule
 	mov word[shellpid],ax

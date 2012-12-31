@@ -57,12 +57,16 @@ printstack:
 	call printret
 ret
 
-maloc:			;Allocate RAM
+maloc:
+	mov si,void + 20
+	call malocsmall
+ret
+
+malocsmall:			;Allocate RAM
 	push si
 	push di
-	mov dx,ax	;IN - ax, size
+	mov dx,ax	;IN - ax, size, si, area
 	push dx		;OUT - ax, bottom, bx, top
-	mov si,void + 20
 .find
 	cmp byte[si],'0'
 	je .test
@@ -95,6 +99,36 @@ maloc:			;Allocate RAM
 	pop si
 ret
 	.err db 'Memory full',13,10,0
+
+malocbig:		;Out - AX,start of 1kb page, BX, page id
+	mov si,void + 5120
+	xor bx,bx
+.loop
+	cmp si,void + 6144
+	jg .done
+	cmp byte[si + bx],0
+	je .found
+	add bx,1
+	jmp .loop
+.found
+	mov byte[si + bx],1
+	mov ax,1024
+	mul bx
+	add ax,void + 6144
+.done
+ret
+
+freebig:		;In - AX,id of page to free
+	mov si,void + 5120
+	add si,ax
+	mov byte[si],0
+ret
+
+genmemtable:
+	mov bx,void + 5120
+	mov ax,void + 6144
+	call zeroram
+ret
 
 load2mem:	
 	mov ax,si		;Load STRING into memory		
