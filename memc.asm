@@ -65,6 +65,8 @@ ret
 malocsmall:			;Allocate RAM
 	push si
 	push di
+	mov di,si
+	add di,1024
 	mov dx,ax	;IN - ax, size, si, area
 	push dx		;OUT - ax, bottom, bx, top
 .find
@@ -72,7 +74,7 @@ malocsmall:			;Allocate RAM
 	je .test
 	add si,1
 	add dx,1
-	cmp dx,void + 4096
+	cmp dx,di
 	je .full
 	jmp .find
 .test
