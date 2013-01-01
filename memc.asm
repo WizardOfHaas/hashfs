@@ -58,8 +58,10 @@ printstack:
 ret
 
 maloc:
+	push si
 	mov si,void + 20
 	call malocsmall
+	pop si
 ret
 
 malocsmall:			;Allocate RAM
@@ -74,7 +76,7 @@ malocsmall:			;Allocate RAM
 	je .test
 	add si,1
 	add dx,1
-	cmp dx,di
+	cmp dx,void + 4096
 	je .full
 	jmp .find
 .test
