@@ -44,6 +44,11 @@ Init:
 	call multi
 	call printok
 
+	mov si,loadintsmsg
+	call print
+	call loadints
+	call printok
+
 	mov si,loadshell
 	call print
 	mov ax,shell
@@ -74,7 +79,6 @@ Init:
 	call print
 	call printret
 
-	call loadints
 	call login
 main:			;Main command loop
 	call yield
@@ -306,6 +310,7 @@ ret
         loading db 13,10,'Loading',0
 	loadmem db 'Setting Up Memory Allocater...',0
 	loadmulti db 'Setting Up Multi-Threading...',0
+	loadintsmsg db 'Loading IDT...',0
 	loadshell db 'Spawning Shell Task...',0
         dot db '.',0
 	voidat db 13,10,'Void at ',0
@@ -539,6 +544,18 @@ compare:		;Compare two strings
         popa
         stc
 	ret
+
+compout:		;In - SI,DI, strings to compare Out - AX, length of similarity
+	xor ax,ax
+.loop
+	add ax,1
+	cmp byte[si],0
+	je .done
+	mov bl,byte[si]
+	cmp byte[di],bl
+	je .loop
+.done
+ret
 
 clear:			;Clear screen
 	pusha
