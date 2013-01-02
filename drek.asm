@@ -87,7 +87,7 @@ jmp main
 
 getthread:		;Turns command into memory location
 	mov si,help	;IN - di, string to interpret
-	call compare
+	call closeenough
 	jc .helpcmd
 
 	mov si,reboot
@@ -543,18 +543,41 @@ compare:		;Compare two strings
 .done
         popa
         stc
-	ret
+ret
 
 compout:		;In - SI,DI, strings to compare Out - AX, length of similarity
-	xor ax,ax
-.loop
-	add ax,1
-	cmp byte[si],0
-	je .done
-	mov bl,byte[si]
-	cmp byte[di],bl
-	je .loop
+	xor dx,dx
+.loop			
+        mov al,[si]
+        mov bl,[di]
+        cmp al,bl
+        jne .done
+
+        cmp al,0
+        je .done
+
+        inc si
+        inc di
+	inc dx
+        jmp .loop
 .done
+	mov ax,dx
+ret
+
+closeenough:
+	push si
+	push di
+	clc
+	call compout
+	cmp ax,2
+	jge .ok
+	jmp .done
+.ok
+	call getregs
+	stc
+.done
+	pop di
+	pop si
 ret
 
 clear:			;Clear screen
