@@ -35,15 +35,21 @@ Init:
 	mov dx,filesend + 1024
 	call memclear
 	call genmemtable
+	call printok
 
 	mov si,loadmulti
 	call print
 	mov word[currpid],taskque
 	mov ax,0
 	call multi
+	call printok
+
+	mov si,loadshell
+	call print
 	mov ax,shell
 	call schedule
 	mov word[shellpid],ax
+	call printok
 
 	mov ax,0
 	call porton
@@ -298,14 +304,11 @@ commands:
 ret
 
         loading db 13,10,'Loading',0
-	loadmem db 'Setting Up Memory Allocater...',13,10,0
-	loadmulti db 'Setting Up Multi-Threading...',13,10,0
-	loadstack db 'Setting Up Stack...',13,10,0
-	loaddir db 'Loading root directory...',13,10,0
+	loadmem db 'Setting Up Memory Allocater...',0
+	loadmulti db 'Setting Up Multi-Threading...',0
+	loadshell db 'Spawning Shell Task...',0
         dot db '.',0
 	voidat db 13,10,'Void at ',0
-	ips db '1m instructions in ',0
-	ipsticks db ' ticks',0
 	help db 'help',0
         header db ' ____',13,10,'| 00_|_ DreckigOS',13,10,'| 0| 0 | v0.007 Alpha',13,10,'|__|___| 2011-12 Sean Haas',13,10,0
         prompt db '?>',0
@@ -411,6 +414,17 @@ dotdot:
         jmp .loop
 .done
         ret
+
+printok:
+	pusha
+	call getcurs
+	mov dl,45
+	call movecurs
+	mov si,.ok
+	call print
+	popa
+ret
+	.ok db 'Ok!',13,10,0
 
 input:			;Take keyboard input
         ;cmp byte[doterm],1
@@ -1100,19 +1114,8 @@ ret
 
 bsod:
 	pusha
-	;mov ah,05h
-	;mov al,0
-	;int 10h
-	;mov dx,0
-	;mov bh,0
-	;mov ah,2h
-	;int 10h
-	;mov cx,2000
-	;mov bh,0
-	;mov bl,17h
-	;mov al,20h
-	;mov ah,9h
-	;int 10h
+	mov byte[colors],17h
+	call clear
 
 	mov si,bsodmsg
 	call print
