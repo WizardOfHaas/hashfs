@@ -1,5 +1,3 @@
-%INCLUDE "rom.asm"
-
 nodemaster:
 	xor bx,bx
 .schedloop
@@ -35,14 +33,19 @@ ret
 alocvm:
 	pusha
 	mov si,bx
+	push si
 	mov ax,16
-	call maloc
+	mov si,di
+	call malocsmall
+	pop si
 	call zeroram
 	mov word[nodemaster.cpulist + si],bx
 	popa	
 ret
 
 alocallvm:
+	call malocbig
+	mov di,ax
 	xor bx,bx
 .loop
 	cmp bx,6
@@ -174,7 +177,6 @@ runcpu:
 	cmp byte[.int],0
 	jne .doint
 	call runop
-	call vmhud
 	call yield
 	jmp .loop
 .wait

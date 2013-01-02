@@ -105,6 +105,7 @@ ret
 	.err db 'Memory full',13,10,0
 
 malocbig:		;Out - AX,start of 1kb page, BX, page id
+	push si
 	mov si,void + 5120
 	xor bx,bx
 .loop
@@ -120,6 +121,13 @@ malocbig:		;Out - AX,start of 1kb page, BX, page id
 	mul bx
 	add ax,void + 6144
 .done
+	pusha
+	mov si,ax
+	mov dx,ax
+	add dx,1024
+	call memclear
+	popa
+	pop si
 ret
 
 freebig:		;In - AX,id of page to free
