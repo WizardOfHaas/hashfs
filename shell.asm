@@ -28,6 +28,8 @@ shell:
 .err
 	jmp .done
 .done
+	mov si,buffer
+	call addtohist
 ret
 
 savecurs:
@@ -113,4 +115,97 @@ parse:
 	
 	pop ax
 	pop si
+ret
+
+compout:		;In - SI,DI, strings to compare Out - AX, length of similarity
+	xor dx,dx
+.loop			
+        mov al,[si]
+        mov bl,[di]
+        cmp al,bl
+        jne .done
+
+        cmp al,0
+        je .done
+
+        inc si
+        inc di
+	inc dx
+        jmp .loop
+.done
+	mov ax,dx
+ret
+
+closeenough:
+	push si
+	push di
+	call compout
+	cmp ax,2
+	jge .ok
+	jmp .notok
+.ok
+	stc
+	pop di
+	pop si
+ret
+.notok
+	clc
+	pop di
+	pop si
+ret
+
+histstart dw 0
+histend dw 0
+histpage dw 0
+
+inithist:
+	pusha
+	call malocbig
+	mov [histstart],ax
+	add ax,1024
+	mov [histend],ax
+	mov [histpage],bx
+	popa
+ret
+
+addtohist:
+	pusha
+	push si
+	mov ax,si
+	call length
+	push ax
+	mov si,[histstart]
+	call malocsmall
+	cmp ax,[histend]
+	pop ax
+	jge .shift
+	.ok
+	pop si
+	mov di,bx
+	call copystring
+	jmp .done
+.shift
+	mov di,[histstart]
+	mov si,di
+	add si,ax
+	sub bx,ax
+	mov ax,1024
+	call memcpy
+	jmp .ok
+.done
+	popa
+ret
+
+showhist:
+	mov si,[histstart]
+.typeloop
+	call print
+	call printret
+	mov ax,si
+	call length
+	add si,ax
+	add si,1
+	cmp byte[si],'0'
+	jne .typeloop
+.done
 ret

@@ -56,6 +56,8 @@ Init:
 	mov word[shellpid],ax
 	call printok
 
+	call inithist
+
 	mov ax,0
 	call porton
 
@@ -87,7 +89,7 @@ jmp main
 
 getthread:		;Turns command into memory location
 	mov si,help	;IN - di, string to interpret
-	call closeenough
+	call compare
 	jc .helpcmd
 
 	mov si,reboot
@@ -198,6 +200,10 @@ getthread:		;Turns command into memory location
 	call compare
 	jc .cryptcmd
 
+	mov si,hist
+	call compare
+	jc .histcmd
+
 	mov si,rpc
 	call compare
 	jc .rpccmd
@@ -285,6 +291,9 @@ getthread:		;Turns command into memory location
 .cryptcmd
 	mov ax,cryptcmd
 	jmp .done
+.histcmd
+	mov ax,showhist
+	jmp .done
 .rpccmd
 	mov ax,rpccmd
 .done
@@ -326,6 +335,7 @@ ret
 	catch db 'catch',0
 	regs db 'regs',0
 	lo db 'lo',0
+	hist db 'hist',0
 	crypt db 'crypt',0
 	log db 'log',0
 	rpc db 'rpc',0
@@ -543,41 +553,6 @@ compare:		;Compare two strings
 .done
         popa
         stc
-ret
-
-compout:		;In - SI,DI, strings to compare Out - AX, length of similarity
-	xor dx,dx
-.loop			
-        mov al,[si]
-        mov bl,[di]
-        cmp al,bl
-        jne .done
-
-        cmp al,0
-        je .done
-
-        inc si
-        inc di
-	inc dx
-        jmp .loop
-.done
-	mov ax,dx
-ret
-
-closeenough:
-	push si
-	push di
-	clc
-	call compout
-	cmp ax,2
-	jge .ok
-	jmp .done
-.ok
-	call getregs
-	stc
-.done
-	pop di
-	pop si
 ret
 
 clear:			;Clear screen
@@ -1086,6 +1061,8 @@ ret
 
 locmd:
 	call killque
+	mov ax,[histpage]
+	call freebig
 	mov byte[crypton],0
 	mov ax,'0'
 	mov [user],ax

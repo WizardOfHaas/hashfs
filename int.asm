@@ -7,8 +7,8 @@ loadints:
 	cmp bx,8
 	jl .loop
 
-	mov di,int20h
-	mov bx,20h
+	mov di,int32h
+	mov bx,32h
 	call loadint
 ret
 
@@ -49,8 +49,8 @@ remap:
 	sti
 ret
 
-int20h:
-	call err
+int32h:
+	call yield
 iret
 
 except:
