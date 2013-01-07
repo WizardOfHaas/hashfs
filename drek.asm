@@ -11,7 +11,7 @@
 ;    You should have received a copy of the GNU General Public License
 ;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;	
-;	copyright Sean Haas 2011-12
+;	copyright Sean Haas 2011-14
 ORG 100h
 jmp short Init
 sc1 db 0
@@ -324,7 +324,7 @@ ret
         dot db '.',0
 	voidat db 13,10,'Void at ',0
 	help db 'help',0
-        header db ' ____',13,10,'| 00_|_ DreckigOS',13,10,'| 0| 0 | v0.007 Alpha',13,10,'|__|___| 2011-12 Sean Haas',13,10,0
+        header db ' ____',13,10,'| 00_|_ DreckigOS',13,10,'| 0| 0 | v0.007 Alpha',13,10,'|__|___| 2011-14 Sean Haas',13,10,0
         prompt db '?>',0
         error db 'Error!',13,10,0
         reboot db 'reboot',0
