@@ -40,6 +40,11 @@ runbf:
 ret
 
 compbf:
+	pusha
+	call malocbig
+	mov [bf2mvm.jmppage],bx
+	mov [bf2mvm.jmpmem],ax
+	popa
 	mov di,void
 .loop
 	mov bx,[si]
@@ -52,6 +57,8 @@ compbf:
 	jmp .loop
 .done
 	mov byte[di],0
+	mov ax,[bf2mvm.jmppage]
+	call freebig
 ret
 
 bf2mvm:
@@ -118,7 +125,10 @@ bf2mvm:
 	mov byte[di],6
 	mov ax,di
 	sub ax,void
-	mov [.jmp],ax
+	mov bx,[.jmp]
+	add bx,[.jmpmem]
+	mov [bx],ax
+	add word[.jmp],2
 	jmp .done
 .dojmp
 	mov byte[di],41
@@ -135,7 +145,12 @@ bf2mvm:
 	add di,1
 	mov byte[di],10
 	add di,1
-	mov ax,[.jmp]
+	
+	mov bx,[.jmp]
+	sub bx,2
+	mov [.jmp],bx
+	add bx,[.jmpmem]
+	mov ax,[bx]
 	mov byte[di],al
 	jmp .done
 .done
@@ -143,3 +158,5 @@ bf2mvm:
 .end
 ret
 	.jmp dw 0
+	.jmppage dw 0
+	.jmpmem dw 0

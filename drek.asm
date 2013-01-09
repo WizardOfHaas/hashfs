@@ -96,10 +96,6 @@ getthread:		;Turns command into memory location
 	call compare
 	jc .rebootcmd
 
-	mov si,time
-	call compare
-	jc .timecmd
-
         mov si,info
         call compare
         jc .infocmd
@@ -218,9 +214,6 @@ getthread:		;Turns command into memory location
         jmp .done
 .rebootcmd
 	call reboot1
-.timecmd
-	mov ax,gettime
-	jmp .done
 .infocmd
 	mov ax,sysinfo
         jmp .done
